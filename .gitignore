@@ -1,0 +1,41 @@
+# Dart tool files
+.dart_tool/
+
+# Flutter tool files
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+
+# Build directory
+build/
+
+# Android files
+android/.gradle/
+android/gradle/
+android/gradlew
+android/gradlew.bat
+android/local.properties
+android/.idea/
+
+# iOS files
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/App.framework
+ios/Flutter/engine.xcframework
+ios/Flutter/flutter_assets/kernel_blob.bin
+ios/Flutter/flutter_assets/isolate_snapshot_data
+ios/Flutter/flutter_assets/vm_snapshot_data
+ios/.idea/
+ios/Runner.xcworkspace/xcshareddata/
+ios/Runner.xcworkspace/xcuserdata/
+
+# IntelliJ files
+.idea/
+*.iml
+
+# VS Code files
+.vscode/
+
+# Windows files
+AppPackages/
+BundleArtifacts/
