@@ -7,24 +7,44 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:empathy_hub_app/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('App initializes, shows loading, then HomePage after anonymous auth', (WidgetTester tester) async {
+    // Set mock initial values for SharedPreferences for predictable testing.
+    // Start with no stored ID, so a new one will be generated.
+    SharedPreferences.setMockInitialValues({});
+
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(const EmpathyHubApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Initially, we should see the loading indicator from AuthGate
+    // because AuthCubit emits AuthLoading first.
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Wait for all asynchronous operations to complete.
+    // This includes the Future.delayed in AuthCubit and SharedPreferences calls.
+    // pumpAndSettle will keep pumping frames until there are no more frames scheduled.
+    await tester.pumpAndSettle();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // After loading, the CircularProgressIndicator should be gone.
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+
+    // Now, we should be on the HomePage.
+    // Let's verify some text from the HomePage.
+    // We expect the AppBar title to contain "Empathy Hub - Welcome Anonymous User"
+    // and part of an ID. We can use a partial match.
+    expect(
+      find.descendant(
+        of: find.byType(AppBar),
+        matching: find.textContaining(RegExp(r'Empathy Hub - Welcome Anonymous User \([a-f0-9]{8}...\)')),
+      ),
+      findsOneWidget,
+    );
+
+    // And the body text
+    expect(find.text('Main App Content Goes Here!'), findsOneWidget);
   });
 }

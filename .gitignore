@@ -29,10 +29,17 @@ ios/.idea/
 ios/Runner.xcworkspace/xcshareddata/
 ios/Runner.xcworkspace/xcuserdata/
 
-# IntelliJ files
+# IntelliJ/Android Studio
 .idea/
 *.iml
+*.ipr
+*.iws
+.metadata
 
+# macOS
+/macos/Flutter/GeneratedPluginRegistrant.swift
+# Add other Flutter specific ignores if not already present
+# e.g. build/, .dart_tool/, etc.
 # VS Code files
 .vscode/
 

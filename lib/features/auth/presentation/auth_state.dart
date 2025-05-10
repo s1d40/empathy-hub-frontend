@@ -1,5 +1,6 @@
 part of 'auth_cubit.dart'; // We'll create auth_cubit.dart next
 
+
 abstract class AuthState extends Equatable {
   const AuthState();
 
@@ -14,12 +15,12 @@ class AuthLoading extends AuthState {}
 // For MVP, anonymous ID is auto-generated.
 // This state means we have an anonymous ID.
 class AuthSuccess extends AuthState {
-  final String anonymousId; // Or a User object if you prefer
+  final User user; // Now holds a User object
 
-  const AuthSuccess(this.anonymousId);
+  const AuthSuccess(this.user);
 
   @override
-  List<Object?> get props => [anonymousId];
+  List<Object?> get props => [user]; // User model should handle Equatable correctly
 }
 
 class AuthFailure extends AuthState {
@@ -29,4 +30,14 @@ class AuthFailure extends AuthState {
 
   @override
   List<Object?> get props => [message];
+}
+
+
+class AuthRequiresUsername extends AuthState{
+  final String anonymousId;
+
+  const AuthRequiresUsername(this.anonymousId);
+
+  @override
+  List<Object?> get props => [anonymousId];
 }
