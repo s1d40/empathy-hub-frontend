@@ -1,33 +1,51 @@
-import 'package:empathy_hub_app/features/feed/presentation/models/comment_model.dart';
+import 'package:equatable/equatable.dart';
+import 'package:empathy_hub_app/features/user/data/models/user_simple_model.dart'; // Import UserSimple
 
-class Post {
+class Post extends Equatable {
   final String id;
-  final String userId; // ID of the user who created the post
-  final String username;
-  final String? avatarUrl;
-  final String content;
-  final DateTime timestamp;
+  final String? title;
+  final String? content; // Made content nullable
+  final UserSimple author; // Changed to UserSimple
+  final int commentCount;
+  final bool isActive;
+  final bool isEdited;
   final int upvotes;
   final int downvotes;
-  final List<Comment> comments;
+  final DateTime createdAt; // Renamed from timestamp
+  final DateTime? updatedAt;
 
   const Post({
     required this.id,
-    required this.userId,
-    required this.username,
-    this.avatarUrl,
-    required this.content,
-    required this.timestamp,
-    this.upvotes = 0,
-    this.downvotes = 0,
-    this.comments = const [], // Default to an empty list
+    this.title,
+    this.content, // No longer required, can be null
+    required this.author, // Changed
+    required this.commentCount,
+    required this.isActive,
+    required this.isEdited,
+    required this.upvotes,
+    required this.downvotes,
+    required this.createdAt, // Renamed from timestamp
+    this.updatedAt,
   });
 
-  // Later, you might add methods like:
-  // factory Post.fromJson(Map<String, dynamic> json) => ...
-  // Map<String, dynamic> toJson() => ...
-  // Post copyWith(...) => ...
+  factory Post.fromJson(Map<String, dynamic> json) {
+    return Post(
+      // Safely parse id, providing a fallback or logging an error if critical
+      id: (json['id'] as String?) ?? 'error_unknown_post_id', 
+      title: json['title'] as String?,
+      content: json['content'] as String?, // Parse as nullable String
+      author: UserSimple.fromJson(json['author'] as Map<String, dynamic>), // Changed
+      commentCount: json['comment_count'] as int,
+      isActive: json['is_active'] as bool,
+      isEdited: json['is_edited'] as bool,
+      upvotes: json['upvotes'] as int,
+      downvotes: json['downvotes'] as int,
+      // Safely parse createdAt, providing a fallback
+      createdAt: DateTime.parse((json['created_at'] as String?) ?? DateTime(1970).toIso8601String()),
+      updatedAt: json['updated_at'] == null ? null : DateTime.parse(json['updated_at'] as String),
+    );
+  }
 
-  // Helper for displaying relative time, if needed here or in a utility class
-  // String get timeAgo => /* logic to convert timestamp to 'X time ago' */;
+  @override
+  List<Object?> get props => [id, title, content, author, commentCount, isActive, isEdited, upvotes, downvotes, createdAt, updatedAt];
 }

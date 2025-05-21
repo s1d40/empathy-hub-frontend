@@ -1,10 +1,16 @@
-import 'package:empathy_hub_app/features/feed/presentation/models/post_model.dart'; // Changed import
 import 'package:empathy_hub_app/features/feed/presentation/widgets/feed_item_widget.dart';
-import 'package:empathy_hub_app/features/feed/data/mock/mock_feed_data.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:empathy_hub_app/features/feed/presentation/cubit/feed_cubit.dart';
+import 'package:empathy_hub_app/features/feed/presentation/cubit/post_item_cubit/post_item_cubit.dart';
+import 'package:empathy_hub_app/features/auth/presentation/auth_cubit.dart';
+import 'package:empathy_hub_app/core/services/post_api_service.dart';
+import 'package:empathy_hub_app/features/feed/presentation/models/post_model.dart'; // Import the Post model
+
 
 class FeedWidget extends StatefulWidget {
-  const FeedWidget({super.key});
+  // Consider if you need to pass any initial parameters, though usually not for a feed.
+  const FeedWidget({super.key}); 
 
   @override
   State<FeedWidget> createState() => _FeedWidgetState();
@@ -13,97 +19,131 @@ class FeedWidget extends StatefulWidget {
 class _FeedWidgetState extends State<FeedWidget> {
   final List<Post> _displayedItems = []; // Changed type to Post
   final ScrollController _scrollController = ScrollController();
-  bool _isLoadingMore = false;
-  bool _hasMoreItems = true;
-  final int _itemsPerPage = 7; // Number of items to load per "page"
 
   @override
   void initState() {
     super.initState();
-    // print("FeedWidget: initState - Calling initial _loadMoreItems.");
-    _loadMoreItems(); // Load initial items
-    _scrollController.addListener(() {
-      // print("FeedWidget Scroll: pixels=${_scrollController.position.pixels}, extentAfter=${_scrollController.position.extentAfter}, maxScrollExtent=${_scrollController.position.maxScrollExtent}");
-      // print("FeedWidget Scroll: isLoadingMore=$_isLoadingMore, hasMoreItems=$_hasMoreItems");
-      // Check if the user has scrolled to near the bottom of the list
-      if (_scrollController.position.extentAfter < 300 && // 300 pixels from bottom
-          !_isLoadingMore &&
-          _hasMoreItems) {
-        // print("FeedWidget Scroll: Condition MET to load more items via scroll.");
-        _loadMoreItems();
-      }
-    });
-  }
-
-  Future<void> _loadMoreItems() async {
-    if (_isLoadingMore || !_hasMoreItems) {
-      // print("FeedWidget: _loadMoreItems - Bailing out. isLoadingMore: $_isLoadingMore, hasMoreItems: $_hasMoreItems");
-      return;
-    }
-
-    // print("FeedWidget: _loadMoreItems START - displayedItems: ${_displayedItems.length}");
-    setState(() {
-      _isLoadingMore = true;
-    });
-
-    // Simulate a network delay, like fetching from an API
-    await Future.delayed(const Duration(seconds: 1));
-    if (!mounted) return; // Check if the widget is still in the tree
-
-    final int currentLength = _displayedItems.length;
-    final int endOfList = currentLength + _itemsPerPage;
-
-    // Get the next batch of items from our mock data source
-    final itemsToAdd = allMockFeedItems.sublist(
-        currentLength,
-        endOfList > allMockFeedItems.length
-            ? allMockFeedItems.length
-            : endOfList);
-    // print("FeedWidget: _loadMoreItems - Attempting to add ${itemsToAdd.length} items.");
-    _displayedItems.addAll(itemsToAdd);
-
-    setState(() {
-      _isLoadingMore = false;
-      _hasMoreItems = _displayedItems.length < allMockFeedItems.length;
-      // print("FeedWidget: _loadMoreItems END - isLoadingMore: $_isLoadingMore, hasMoreItems: $_hasMoreItems, displayed: ${_displayedItems.length}, total: ${allMockFeedItems.length}");
-
-      // After loading, check if the content is still not scrollable and more items exist.
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted && _hasMoreItems && !_isLoadingMore && _scrollController.position.maxScrollExtent <= _scrollController.position.pixels) {
-          // print("FeedWidget: Content not scrollable after load, but more items exist. Triggering another load.");
-          _loadMoreItems();
-        }
-      });
-    });
+    // Initial load is typically triggered when FeedCubit is created or by HomePage.
+    // If FeedWidget is the one creating/providing FeedCubit, then:
+    // context.read<FeedCubit>().loadPosts();
+    _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    _scrollController.removeListener(_onScroll);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      controller: _scrollController,
-      itemCount: _displayedItems.length + (_hasMoreItems ? 1 : 0), // +1 for loading indicator
-      itemBuilder: (BuildContext context, int index) {
-        // If it's the last item and there are more items to load, show a loading indicator
-        if (index == _displayedItems.length && _hasMoreItems) {
-          return const Center(
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: CircularProgressIndicator(),
+    // The BlocBuilder should be the top-level widget returned by build.
+    return BlocBuilder<FeedCubit, FeedState>(
+      builder: (context, state) {
+        if (state is FeedInitial) {
+          // Trigger initial load now that FeedCubit is globally provided
+          context.read<FeedCubit>().loadPosts(); 
+          return const Center(child: Text("Initializing feed..."));
+        }
+        // Handle FeedLoading state:
+        // If it's FeedLoading and there are no posts yet (initial load), show full spinner.
+        // If it's FeedLoading but we already have posts (meaning we are loading more in the background
+        // or a refresh was triggered while posts were visible), we'll fall through to the FeedLoaded logic
+        // to keep displaying existing posts. The ListView builder will handle the "loading more" indicator.
+        if (state is FeedLoading && (state is! FeedLoaded || (state as FeedLoaded).posts.isEmpty)) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        // Handle FeedError state (only if no posts are currently loaded)
+        if (state is FeedError && (state is! FeedLoaded || (state as FeedLoaded).posts.isEmpty)) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Error: ${state.message}'),
+                ElevatedButton(
+                  onPressed: () => context.read<FeedCubit>().loadPosts(),
+                  child: const Text('Retry'),
+                )
+              ],
             ),
           );
         }
-        // Ensure we don't try to access an index out of bounds
-        if (index >= _displayedItems.length) return null; 
+        // Handle FeedLoaded state, or FeedLoading/FeedError if posts are already available
+        if (state is FeedLoaded || (state is FeedLoading && (state as FeedLoaded).posts.isNotEmpty) || (state is FeedError && (state as FeedLoaded).posts.isNotEmpty)) {
+          
+          List<Post> posts = [];
+          bool hasReachedMax = true; // Default to true if not FeedLoaded
+          
+          if (state is FeedLoaded) {
+            posts = state.posts;
+            hasReachedMax = state.hasReachedMax;
+          } else if (state is FeedLoading && (state as FeedLoaded).posts.isNotEmpty) {
+            posts = (state as FeedLoaded).posts; // Show existing posts while loading more
+            // hasReachedMax will be determined by the eventual FeedLoaded state
+          } else if (state is FeedError && (state as FeedLoaded).posts.isNotEmpty) {
+            posts = (state as FeedLoaded).posts; // Show existing posts even if there was an error loading more
+          }
+          final bool isLoadingMore = (state is FeedLoading && posts.isNotEmpty);
 
-        final item = _displayedItems[index];
-        return FeedItemWidget(item: item);
+          if (posts.isEmpty && !isLoadingMore) { // Check isLoadingMore as well
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('No posts yet. Be the first!'),
+                  ElevatedButton(
+                    onPressed: () => context.read<FeedCubit>().refreshPosts(),
+                    child: const Text('Refresh'),
+                  )
+                ],
+              ),
+            );
+          }
+
+          return RefreshIndicator(
+            onRefresh: () => context.read<FeedCubit>().refreshPosts(),
+            child: ListView.builder(
+              controller: _scrollController,
+              itemCount: posts.length + (hasReachedMax || isLoadingMore ? 0 : 1),
+              itemBuilder: (BuildContext context, int index) {
+                if (index >= posts.length) {
+                  return const Center(child: Padding(padding: EdgeInsets.all(16.0), child: CircularProgressIndicator()));
+                }
+                final post = posts[index];
+                return BlocProvider<PostItemCubit>(
+                  key: ValueKey(post.id), // Important for list item state
+                  create: (_) => PostItemCubit(
+                    authCubit: context.read<AuthCubit>(),
+                    postApiService: context.read<PostApiService>(),
+                    initialPost: post,
+                  ),
+                  // BlocListener for PostItemDeleted is better handled in HomePage or where FeedCubit is managed
+                  child: const FeedItemWidget(), // FeedItemWidget now gets post from its own Cubit
+                );
+              },
+            ),
+          );
+        }
+        return const Center(child: Text("Something went wrong.")); // Fallback
       },
     );
+  }
+
+  void _onScroll() {
+    if (_isBottom) {
+      final feedState = context.read<FeedCubit>().state;
+      if (feedState is FeedLoaded && !feedState.hasReachedMax) {
+        context.read<FeedCubit>().loadMorePosts();
+      }
+    }
+  }
+
+  bool get _isBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    // Trigger a bit before reaching the absolute bottom for a smoother experience
+    return currentScroll >= (maxScroll * 0.9); 
   }
 }

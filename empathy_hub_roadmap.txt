@@ -274,13 +274,91 @@ sprint length.
 ○  Version Control: Initialize Git repositories (frontend, backend). Establish 
 branching strategy (e.g., Gitflow). 
 ○  Environment Setup: Local development environment setup for all team 
-members (Flutter, Dart, Python, Docker). 
-○  Frontend (Flutter): Initialize Flutter project. Choose and integrate state 
-management (Riverpod/BLoC). Setup basic project structure, linter. Initial UI 
-shells/skeletons for core screens (login/auth, main nav, chat, AI, basic thread 
-list, settings) considering responsive breakpoints for web. 
-○  Backend (Python/FastAPI): Initialize FastAPI project. Setup basic project 
-structure, linter. Dockerize backend application. 
+    members (Flutter, Dart, Python, Docker).
+○  Frontend (Flutter):
+    - **Project Setup:** Initialized Flutter project. Integrated BLoC/Cubit for
+      state management across features (Auth, Feed, PostItem, CreatePost,
+      Comments, UserProfile, UserInteraction, UserInteractionLists, ChatList,
+      ChatRequest, ChatRoom, ChatInitiation, Report, DataErasure). Established
+      feature-first project structure. Default linter configured.
+    - **Core Services & API Integration:** Dedicated API service layer
+      (AuthApiService, PostApiService, CommentApiService, UserApiService,
+      ChatApiService, ReportApiService, GeneralApiService) for backend
+      communication. Global provider setup in `main.dart` for core Cubits and
+      services.
+    - **Authentication:** Functional anonymous authentication flow (`AuthGate`,
+      `UsernameSelectionPage` with avatar selection). Secure token
+      (`FlutterSecureStorage`) and anonymous ID (`SharedPreferences`) storage.
+      Session management with auto-login (`AuthCubit`). User sign-out and
+      account deletion (via `AuthCubit` and `SettingsPage`).
+    - **Navigation:** Main navigation (`MainNavigationPage` with
+      `BottomNavigationBar` for Feed, AI Pal (shell), Chat). `AppDrawer` for
+      profile, settings, and placeholders. Dynamic `AppBar` with context-specific
+      actions.
+    - **User Profiles (`UserProfilePage`):** Dynamically loads and displays user
+      details (avatar, username, bio, pronouns, member since, chat
+      availability via `UserProfileCubit`). Tabbed view for user's "Posts" and
+      "Comments". Interaction buttons (Mute/Unmute, Block/Unblock via
+      `UserInteractionCubit`). "Start Chat" button (`UserProfileChatButtonWidget`
+      -> `ChatInitiationCubit`). Report user option. Navigation to profiles from
+      various app sections.
+    - **App Drawer Enhancements:** Displays user avatar (static large and
+      interactive swipeable strip via `AvatarStripSelector`) and username. Allows
+      editing username and avatar (dialog for grid selection, strip for swipe)
+      via `AuthCubit.updateUserProfile`.
+    - **Feed & Posts:** Functional feed (`HomePage` -> `FeedWidget`) with
+      infinite scroll, pull-to-refresh (`FeedCubit`). Post creation
+      (`CreatePostPage`) with optional title, content validation, 20s spam
+      cooldown; feed refreshes post-creation (`CreatePostCubit`). Post details
+      view (`PostDetailsPage`). Post interactions (`PostItemCubit` per
+      `FeedItemWidget`): vote (up/down), delete own posts (with confirmation),
+      report other's posts.
+    - **Comments (on `PostDetailsPage`):** Full comment functionality
+      (`CommentsCubit`): view (pagination), create, vote (up/down), delete own
+      (with confirmation), report other's. Tappable author details navigate to
+      profile.
+    - **Chat System:**
+        - **Chat List & Requests (`ChatListPage`):** Tabs for "Chats" (active
+          conversations, `ChatListCubit`, pagination) and "Requests" (pending
+          requests, `ChatRequestCubit`, accept/decline).
+        - **Chat Room (`ChatRoomPage`):** Real-time messaging via WebSockets
+          (`ChatRoomCubit`), message history with pagination. `ChatMessageBubbleWidget`
+          and `MessageInputWidget`.
+        - **Chat Initiation (`ChatInitiationCubit`):** Handles starting direct
+          chats or sending requests. `ChatRequestMessageDialogWidget` for requests
+          with initial messages.
+    - **Settings (`SettingsPage`):** Change chat availability. View Muted/Blocked
+      users (via `UserInteractionListsCubit`). Data Erasure options (posts,
+      comments, chats, all info via `DataErasureCubit`). Account Deletion.
+      Placeholders for notifications, guidelines.
+    - **Reporting (`ReportCubit` & `ReportDialogWidget`):** Users can report
+      posts, comments, or other users with a reason.
+    - **General UI/UX:** Consistent feedback via `BlocListener` &
+      `ScaffoldMessenger`. Confirmation dialogs for critical actions.
+      `UserActionsPopupMenuButton` for context menus on users.
+    - **UI Shells:** Basic UI placeholders for "AI Pal" (`AIChatPage`) and a
+      general "Chat Lobby" (`ChatLobbyPage`) remain.
+    - **Web Considerations:** Initial project setup supports web; responsive
+      design and optimizations are ongoing.
+○  Backend (Python/FastAPI): Initialized FastAPI project, established project
+    structure, linter, and Dockerization. Implemented core API endpoints:
+    - **Authentication:**
+        - Anonymous user creation (`POST /api/v1/users/`) returning an access token.
+        - Token login (`POST /api/v1/auth/token`) using anonymous ID.
+    - **User Management:**
+        - Get current user details (`GET /api/v1/users/me`).
+        - Update current user details (`PUT /api/v1/users/me`).
+        - Delete current user (`DELETE /api/v1/users/me`).
+        - Get user by public anonymous ID (`GET /api/v1/users/anonymous/{user_anonymous_id}`).
+        - Get posts by a specific author (`GET /api/v1/users/{author_anonymous_id}/posts`).
+        - Get comments by a specific author (`GET /api/v1/users/{author_anonymous_id}/comments`).
+    - **Posts (Threads):**
+        - Full CRUD: Create (`POST /api/v1/posts/`), Read List (with pagination) (`GET /api/v1/posts/`), Read Single (`GET /api/v1/posts/{post_anonymous_id}`), Update (`PUT /api/v1/posts/{post_anonymous_id}`), Delete (`DELETE /api/v1/posts/{post_anonymous_id}`).
+        - Voting on posts (`POST /api/v1/posts/{post_anonymous_id}/vote`).
+    - **Comments:**
+        - Full CRUD: Create for a post (`POST /api/v1/posts/{post_anonymous_id}/comments/`), Read List for a post (with pagination) (`GET /api/v1/posts/{post_anonymous_id}/comments/`), Update (`PUT /api/v1/posts/comments/{comment_id}/`), Delete (`DELETE /api/v1/posts/comments/{comment_id}/`).
+        - Voting on comments (`POST /api/v1/posts/comments/{comment_anonymous_id}/vote`).
+    - **General:** Root (`/`) and Health Check (`/health`) endpoints.
 ○  Database: Design initial database schema (v1). Setup local development 
 database. 
 ○  CI/CD (Basic): Setup basic CI pipeline (e.g., GitHub Actions) for running 
