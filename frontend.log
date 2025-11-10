@@ -1,0 +1,19 @@
+Launching lib/main.dart on Linux in debug mode...
+Building Linux application...                                   
+✓ Built build/linux/x64/debug/bundle/empathy_hub_app
+flutter: DEV_MODE: SharedPreferences cleared for fresh start.
+Syncing files to device Linux...                                   196ms
+
+Flutter run key commands.
+r Hot reload. 🔥🔥🔥
+R Hot restart.
+h List all available interactive commands.
+d Detach (terminate "flutter run" but leave application running).
+c Clear the screen
+q Quit (terminate the application on the device).
+
+A Dart VM Service on Linux is available at: http://127.0.0.1:43053/hWjkto205P0=/
+The Flutter DevTools debugger and profiler on Linux is available at: http://127.0.0.1:9101?uri=http://127.0.0.1:43053/hWjkto205P0=/
+
+
+

@@ -14,7 +14,7 @@ class ChatApiService {
     int skip = 0,
     int limit = 20,
   }) async {
-    final Uri url = Uri.parse('${ApiConfig.baseUrl}/api/v1/chats/')
+    final Uri url = Uri.parse('${ApiConfig.baseUrl}/api/v1/chat/')
         .replace(queryParameters: {
       'skip': skip.toString(),
       'limit': limit.toString(),
@@ -56,7 +56,7 @@ class ChatApiService {
     int skip = 0,
     int limit = 20,
   }) async {
-    final Uri url = Uri.parse('${ApiConfig.baseUrl}/api/v1/chats/requests/pending')
+    final Uri url = Uri.parse('${ApiConfig.baseUrl}/api/v1/chat/requests/pending')
         .replace(queryParameters: {
       'skip': skip.toString(),
       'limit': limit.toString(),
@@ -92,7 +92,7 @@ class ChatApiService {
     String requestAnonymousId,
   ) async {
     final Uri url = Uri.parse(
-        '${ApiConfig.baseUrl}/api/v1/chat-requests/$requestAnonymousId/accept');
+        '${ApiConfig.baseUrl}/api/v1/chat/requests/$requestAnonymousId/accept');
 
     try {
       final response = await _client.post(
@@ -122,7 +122,7 @@ class ChatApiService {
     String requestAnonymousId,
   ) async {
     final Uri url = Uri.parse(
-        '${ApiConfig.baseUrl}/api/v1/chat-requests/$requestAnonymousId/decline');
+        '${ApiConfig.baseUrl}/api/v1/chat/requests/$requestAnonymousId/decline');
 
     try {
       final response = await _client.post(
@@ -156,7 +156,7 @@ class ChatApiService {
     ChatInitiate chatInitiateData,
   ) async {
     final Uri url =
-        Uri.parse('${ApiConfig.baseUrl}/api/v1/chats/initiate-direct');
+        Uri.parse('${ApiConfig.baseUrl}/api/v1/chat/initiate-direct');
 
     try {
       final response = await _client.post(
@@ -199,7 +199,7 @@ class ChatApiService {
     int skip = 0,
     int limit = 20, // Or a higher default like 50 for messages
   }) async {
-    final Uri url = Uri.parse('${ApiConfig.baseUrl}/api/v1/chats/$roomAnonymousId/messages')
+    final Uri url = Uri.parse('${ApiConfig.baseUrl}/api/v1/chat/$roomAnonymousId/messages')
         .replace(queryParameters: {
       'skip': skip.toString(),
       'limit': limit.toString(),

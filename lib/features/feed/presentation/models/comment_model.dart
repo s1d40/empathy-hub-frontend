@@ -1,14 +1,16 @@
+import 'dart:convert';
+import 'package:empathy_hub_app/core/config/api_config.dart';
 import 'package:equatable/equatable.dart';
 
 class Comment extends Equatable {
-  final String id; // Corresponds to anonymous_comment_id (UUID) from CommentRead.id
-  final String postId; // Corresponds to post_id (UUID) from CommentRead.post_id
-  final String authorAnonymousId; // Corresponds to author.id (UUID) from CommentRead.author
+  final String id;
+  final String postId;
+  final String authorAnonymousId;
   final String username;
   final String? avatarUrl;
-  final String? content; // Made content nullable
-  final DateTime createdAt; // Corresponds to created_at from CommentRead
-  final DateTime? updatedAt; // Corresponds to updated_at (nullable) from CommentRead
+  final String? content;
+  final DateTime createdAt;
+  final DateTime? updatedAt;
   final int upvotes;
   final int downvotes;
 
@@ -18,7 +20,7 @@ class Comment extends Equatable {
     required this.authorAnonymousId,
     required this.username,
     this.avatarUrl,
-    this.content, // No longer required
+    this.content,
     required this.createdAt,
     this.updatedAt,
     required this.upvotes,
@@ -26,22 +28,33 @@ class Comment extends Equatable {
   });
 
   factory Comment.fromJson(Map<String, dynamic> json) {
-    final authorJson = json['author'] as Map<String, dynamic>;
+    final authorJson = json['author'] as Map<String, dynamic>? ?? {};
+    
     return Comment(
-      id: json['id'] as String,
-      postId: json['post_id'] as String,
-      authorAnonymousId: authorJson['id'] as String,
-      // Safely parse username from authorJson, providing a default if null or not present
+      id: (json['anonymous_comment_id'] as String?) ?? 'error_unknown_comment_id',
+      postId: (json['post_id'] as String?) ?? 'error_unknown_post_id',
+      authorAnonymousId: (authorJson['id'] as String?) ?? 'error_unknown_author_id',
       username: (authorJson['username'] as String?) ?? 'Anonymous',
-      avatarUrl: authorJson['avatar_url'] as String?, // Ensure this is also robust if UserSimple's avatarUrl is
-      content: json['content'] as String?, // Parse as nullable String
-      createdAt: DateTime.parse(json['created_at'] as String),
+      avatarUrl: _resolveAvatarUrl(authorJson['avatar_url'] as String?),
+      content: json['content'] as String?,
+      createdAt: DateTime.parse((json['created_at'] as String?) ?? DateTime(1970).toIso8601String()),
       updatedAt: json['updated_at'] == null
           ? null
           : DateTime.parse(json['updated_at'] as String),
-      upvotes: json['upvotes'] as int,
-      downvotes: json['downvotes'] as int,
+      upvotes: (json['upvotes'] as int?) ?? 0,
+      downvotes: (json['downvotes'] as int?) ?? 0,
     );
+  }
+
+  static String? _resolveAvatarUrl(String? rawUrl) {
+    if (rawUrl == null || rawUrl.isEmpty) {
+      return null;
+    }
+    if (rawUrl.startsWith('http://') || rawUrl.startsWith('https://')) {
+      return rawUrl;
+    }
+    final baseUri = Uri.parse(ApiConfig.baseUrl);
+    return baseUri.resolve(rawUrl).toString();
   }
 
   @override
