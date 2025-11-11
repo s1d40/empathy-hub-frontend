@@ -16,7 +16,7 @@ class ChatRequestItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final requester = request.requester;
-    final avatarUrl = 'https://i.pravatar.cc/150?u=${requester.anonymousId}'; // Use requester's ID
+    final avatarUrl = requester.avatarUrl;
     final initialMessage = request.initialMessage;
 
     return Card(
@@ -26,10 +26,8 @@ class ChatRequestItemWidget extends StatelessWidget {
         child: Row(
           children: <Widget>[
             CircleAvatar(
-              backgroundImage: NetworkImage(avatarUrl),
-              // Or placeholder if no avatar
-              // backgroundImage: avatarUrl != null ? NetworkImage(avatarUrl) : null,
-              // child: avatarUrl == null ? const Icon(Icons.person) : null,
+              backgroundImage: avatarUrl != null ? NetworkImage(avatarUrl) : null,
+              child: avatarUrl == null ? const Icon(Icons.person) : null,
             ),
             const SizedBox(width: 12.0),
             Expanded(

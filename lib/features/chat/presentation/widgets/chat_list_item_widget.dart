@@ -38,9 +38,7 @@ class ChatListItemWidget extends StatelessWidget {
 
     final String? avatarUrl = chatRoom.isGroup
         ? null // Placeholder for group avatar
-        : otherParticipant != null
-            ? 'https://i.pravatar.cc/150?u=${otherParticipant.anonymousId}' // Pravatar for now
-            : null;
+        : otherParticipant?.avatarUrl;
 
     String lastMessagePreview = chatRoom.lastMessage?.content ?? 'No messages yet';
     if (lastMessagePreview.length > 35) {
