@@ -46,3 +46,10 @@ ios/Runner.xcworkspace/xcuserdata/
 # Windows files
 AppPackages/
 BundleArtifacts/
+
+# Logs
+*.log
+logs/
+
+# Scripts
+fetch_frontend_logs.sh
