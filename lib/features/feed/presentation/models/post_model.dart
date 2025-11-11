@@ -29,21 +29,37 @@ class Post extends Equatable {
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
-    return Post(
-      // Safely parse id, providing a fallback or logging an error if critical
-      id: (json['id'] as String?) ?? 'error_unknown_post_id', 
-      title: json['title'] as String?,
-      content: json['content'] as String?, // Parse as nullable String
-      author: UserSimple.fromJson(json['author'] as Map<String, dynamic>), // Changed
-      commentCount: json['comment_count'] as int,
-      isActive: json['is_active'] as bool,
-      isEdited: json['is_edited'] as bool,
-      upvotes: json['upvotes'] as int,
-      downvotes: json['downvotes'] as int,
-      // Safely parse createdAt, providing a fallback
-      createdAt: DateTime.parse((json['created_at'] as String?) ?? DateTime(1970).toIso8601String()),
-      updatedAt: json['updated_at'] == null ? null : DateTime.parse(json['updated_at'] as String),
-    );
+    try {
+      final id = (json['id'] as String?) ?? 'error_unknown_post_id';
+      final title = json['title'] as String?;
+      final content = json['content'] as String?;
+      final author = UserSimple.fromJson(json['author'] as Map<String, dynamic>);
+      final commentCount = (json['comment_count'] as num?)?.toInt() ?? 0;
+      final isActive = (json['is_active'] as bool?) ?? true;
+      final isEdited = (json['is_edited'] as bool?) ?? false;
+      final upvotes = (json['upvotes'] as num?)?.toInt() ?? 0;
+      final downvotes = (json['downvotes'] as num?)?.toInt() ?? 0;
+      final createdAt = DateTime.parse((json['created_at'] as String?) ?? DateTime(1970).toIso8601String());
+      final updatedAt = json['updated_at'] == null ? null : DateTime.parse(json['updated_at'] as String);
+
+      return Post(
+        id: id,
+        title: title,
+        content: content,
+        author: author,
+        commentCount: commentCount,
+        isActive: isActive,
+        isEdited: isEdited,
+        upvotes: upvotes,
+        downvotes: downvotes,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+      );
+    } catch (e, s) {
+      print('[Post.fromJson] Exception: $e');
+      print('[Post.fromJson] Stacktrace: $s');
+      rethrow;
+    }
   }
 
   @override
