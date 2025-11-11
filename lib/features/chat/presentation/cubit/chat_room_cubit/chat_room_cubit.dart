@@ -146,8 +146,9 @@ class ChatRoomCubit extends Cubit<ChatRoomState> {
         try {
           //print("[ChatRoomCubit _channel.stream.listen] Received raw message: $message");
           final decodedMessage = json.decode(message as String);
-          if (decodedMessage['type'] == 'new_message') {
-            final chatMessage = ChatMessage.fromJson(decodedMessage['payload'] as Map<String, dynamic>);
+          final webSocketMessage = WebSocketMessage.fromJson(decodedMessage);
+          if (webSocketMessage.type == 'new_message') {
+            final chatMessage = ChatMessage.fromJson(webSocketMessage.payload);
             
             // Ensure we are updating a ChatRoomLoaded state, or creating one if necessary
             if (state is ChatRoomLoaded) {
