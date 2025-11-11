@@ -110,7 +110,7 @@ class ChatRoomCubit extends Cubit<ChatRoomState> {
     final token = (_authCubit.state as Authenticated).token;
     final wsBaseUrl = ApiConfig.baseWsUrl; // Assuming ApiConfig has baseWsUrl like 'ws://127.0.0.1:8000'
     // Corrected WebSocket URL path
-    final url = Uri.parse('$wsBaseUrl/api/v1/chats/ws/$roomAnonymousId?token=$token');
+    final url = Uri.parse('$wsBaseUrl/api/v1/chat/ws/$roomAnonymousId?token=$token');
 
     // IMPORTANT: Capture the messages and details from the current state if it's ChatRoomLoaded.
     // This is because fetchInitialMessages emits ChatRoomLoaded, then calls this.
