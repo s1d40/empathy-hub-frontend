@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:bloc/bloc.dart';
-import 'package:empathy_hub_app/core/config/api_config.dart'; // For WebSocket URL
-import 'package:empathy_hub_app/core/services/chat_api_service.dart';
-import 'package:empathy_hub_app/features/auth/presentation/auth_cubit.dart';
-import 'package:empathy_hub_app/features/chat/data/models/models.dart';
+import 'package:anonymous_hubs/core/config/api_config.dart'; // For WebSocket URL
+import 'package:anonymous_hubs/core/services/chat_api_service.dart';
+import 'package:anonymous_hubs/features/auth/presentation/auth_cubit.dart';
+import 'package:anonymous_hubs/features/chat/data/models/models.dart';
 import 'package:equatable/equatable.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:uuid/uuid.dart'; // Import the uuid package
+import 'package:anonymous_hubs/features/chat/data/models/message_status_enum.dart'; // Import MessageStatus enum
 
 part 'chat_room_state.dart';
 
@@ -17,9 +19,16 @@ class ChatRoomCubit extends Cubit<ChatRoomState> {
   final ChatRoom? initialRoomDetails; // Optional: if passed from chat list
 
   static const int _messagesLimit = 30; // Number of messages to fetch per page
+  final Uuid _uuid = const Uuid(); // Initialize Uuid
 
   WebSocketChannel? _channel;
   StreamSubscription? _channelSubscription;
+
+  // Reconnection logic
+  int _reconnectAttempts = 0;
+  static const int _maxReconnectAttempts = 5;
+  static const Duration _reconnectBaseDelay = Duration(seconds: 2); // Initial delay
+  Timer? _reconnectTimer;
 
   ChatRoomCubit({
     required ChatApiService chatApiService,
@@ -56,6 +65,8 @@ class ChatRoomCubit extends Cubit<ChatRoomState> {
         ));
         // After fetching initial messages, connect to WebSocket
         connectWebSocket();
+        // Mark the chat room as read after successfully loading messages and connecting WebSocket
+        _chatApiService.markChatRoomAsRead(token, roomAnonymousId);
       } else {
         //print('[ChatRoomCubit] Failed to load messages, service returned null.');
         emit(const ChatRoomError("Failed to load messages."));
@@ -147,29 +158,58 @@ class ChatRoomCubit extends Cubit<ChatRoomState> {
           //print("[ChatRoomCubit _channel.stream.listen] Received raw message: $message");
           final decodedMessage = json.decode(message as String);
           final webSocketMessage = WebSocketMessage.fromJson(decodedMessage);
-          if (webSocketMessage.type == 'new_message') {
-            final chatMessage = ChatMessage.fromJson(webSocketMessage.payload);
-            
-            // Ensure we are updating a ChatRoomLoaded state, or creating one if necessary
-            if (state is ChatRoomLoaded) {
-              final currentState = state as ChatRoomLoaded;
-              //print("[ChatRoomCubit connectWebSocket] Received new message. Current state is ChatRoomLoaded. Adding to existing ${currentState.messages.length} messages.");
-              // Append new message to the end of the list
-              // TEST: Try prepending to see if it fixes the visual order issue
-              emit(currentState.copyWith(messages: [chatMessage, ...currentState.messages]));
-            } else {
-              // This might happen if a message arrives very quickly after connection
-              // or if the state was something else (e.g., ChatRoomSendingMessage, though less likely now with the fix below)
-              // We should transition to ChatRoomLoaded with this new message.
-              // We'd need to know 'hasReachedMax' and 'roomDetails' ideally.
-              // For simplicity, if not ChatRoomLoaded, we'll assume it's a fresh load with this one message.
-              //print("[ChatRoomCubit connectWebSocket] Received new message. Current state is ${state.runtimeType}. Transitioning to ChatRoomLoaded with this message.");
-              emit(ChatRoomLoaded(messages: [chatMessage], isWebSocketConnected: true, roomDetails: initialRoomDetails));
-            }
+          if (state is! ChatRoomLoaded) {
+            // If not in loaded state, just log and ignore for now, or re-evaluate state transition
+            // print("Received WebSocket message but not in ChatRoomLoaded state: ${webSocketMessage.type}");
+            return;
           }
-          // Handle other message types if any (e.g., 'error', 'user_joined')
+
+          final currentState = state as ChatRoomLoaded;
+          final currentUserId = (_authCubit.state as Authenticated).user.anonymousId;
+
+          if (webSocketMessage.type == 'new_message') {
+            final receivedChatMessage = ChatMessage.fromJson(webSocketMessage.payload);
+            
+            // Check if this is a confirmation of a pending message from the current user
+            if (receivedChatMessage.senderAnonymousId == currentUserId && receivedChatMessage.clientMessageId != null) {
+              final int index = currentState.messages.indexWhere(
+                (msg) => msg.clientMessageId == receivedChatMessage.clientMessageId && msg.status == MessageStatus.pending
+              );
+
+              if (index != -1) {
+                // Replace the pending message with the confirmed message
+                final updatedMessages = List<ChatMessage>.from(currentState.messages);
+                updatedMessages[index] = receivedChatMessage.copyWith(status: MessageStatus.sent);
+                emit(currentState.copyWith(messages: updatedMessages));
+                return;
+              }
+            }
+            // If not a confirmation of a pending message, or from another user, just prepend
+            emit(currentState.copyWith(messages: [receivedChatMessage, ...currentState.messages]));
+          } else if (webSocketMessage.type == 'error') {
+            final errorPayload = webSocketMessage.payload as Map<String, dynamic>;
+            final clientMessageId = errorPayload['clientMessageId'] as String?;
+            final errorMessage = errorPayload['detail'] as String? ?? "Unknown error";
+
+            if (clientMessageId != null) {
+              // Find the pending message and mark it as failed
+              final int index = currentState.messages.indexWhere(
+                (msg) => msg.clientMessageId == clientMessageId && msg.status == MessageStatus.pending
+              );
+              if (index != -1) {
+                final updatedMessages = List<ChatMessage>.from(currentState.messages);
+                updatedMessages[index] = updatedMessages[index].copyWith(status: MessageStatus.failed);
+                emit(currentState.copyWith(messages: updatedMessages));
+                emit(ChatRoomError("Message failed: $errorMessage")); // Also show a general error
+                return;
+              }
+            }
+            emit(ChatRoomError("WebSocket Error: $errorMessage"));
+          }
+          // Handle other message types if any (e.g., 'user_joined')
         } catch (e) {
           //print("Error processing WebSocket message: $e");
+          emit(ChatRoomError("Failed to process WebSocket message: ${e.toString()}"));
         }
       },
       onError: (error) {
@@ -222,29 +262,76 @@ class ChatRoomCubit extends Cubit<ChatRoomState> {
     );
   }
 
+  void _attemptReconnect() {
+    if (_reconnectAttempts < _maxReconnectAttempts) {
+      _reconnectAttempts++;
+      final delay = _reconnectBaseDelay * _reconnectAttempts; // Exponential backoff
+      emit(ChatRoomWebSocketReconnecting(attempt: _reconnectAttempts, delay: delay));
+      _reconnectTimer = Timer(delay, () {
+        connectWebSocket();
+      });
+    } else {
+      emit(const ChatRoomWebSocketDisconnected(reason: "Max reconnection attempts reached."));
+    }
+  }
+
   void sendMessage(String content) {
     if (_channel == null || (_authCubit.state is! Authenticated)) {
       emit(ChatRoomMessageSendFailed(content, "WebSocket not connected or user not authenticated."));
       return;
     }
-    // Emit ChatRoomSendingMessage, but ensure we have the current messages to revert to ChatRoomLoaded
-    List<ChatMessage> currentMessages = [];
-    bool currentHasReachedMax = false; // Default if not loaded
-    ChatRoom? currentRoomDetails = initialRoomDetails;
+    
+    final authenticatedState = _authCubit.state as Authenticated;
+    final currentUser = authenticatedState.user; // Assuming AuthCubit provides the current user
 
+    if (currentUser == null) {
+      emit(ChatRoomMessageSendFailed(content, "Current user details not available."));
+      return;
+    }
+
+    // Emit ChatRoomLoaded with isSendingMessage: true to disable input
     if (state is ChatRoomLoaded) {
-      final loadedState = state as ChatRoomLoaded;
-      currentMessages = loadedState.messages;
-      currentHasReachedMax = loadedState.hasReachedMaxMessages;
-      currentRoomDetails = loadedState.roomDetails;
+      emit((state as ChatRoomLoaded).copyWith(isSendingMessage: true));
+    } else {
+      // If not in ChatRoomLoaded state, we can't set isSendingMessage,
+      // but the MessageInputWidget should already be disabled if not loaded.
+    }
+
+    final clientMessageId = _uuid.v4(); // Generate a client-side UUID
+
+    final pendingMessage = ChatMessage(
+      content: content,
+      anonymousMessageId: null, // Server ID is not yet known
+      clientMessageId: clientMessageId, // Use client-generated ID
+      chatroomAnonymousId: roomAnonymousId,
+      senderAnonymousId: currentUser.anonymousId,
+      timestamp: DateTime.now(),
+      sender: UserSimple(
+        anonymousId: currentUser.anonymousId,
+        username: currentUser.username!, // Use null-check operator
+        avatarUrl: currentUser.avatarUrl,
+      ),
+      status: MessageStatus.pending, // Set status to pending
+    );
+
+    // Optimistically add the message to the UI
+    List<ChatMessage> updatedMessages = [];
+    if (state is ChatRoomLoaded) {
+      final currentState = state as ChatRoomLoaded;
+      updatedMessages = [pendingMessage, ...currentState.messages];
+      emit(currentState.copyWith(messages: updatedMessages, isSendingMessage: false)); // Reset isSendingMessage
+    } else {
+      // If not in ChatRoomLoaded state, this might be an edge case,
+      // but we should still try to display the message.
+      updatedMessages = [pendingMessage];
+      emit(ChatRoomLoaded(messages: updatedMessages, isWebSocketConnected: true, roomDetails: initialRoomDetails, isSendingMessage: false)); // Reset isSendingMessage
     }
     
-    emit(const ChatRoomSendingMessage()); // UI can show a spinner or disable input
-    final messageToSend = WebSocketChatMessage(content: content);
+    final messageToSend = WebSocketChatMessage(
+      anonymousMessageId: clientMessageId, // Include client-generated ID
+      content: content,
+    );
     _channel!.sink.add(json.encode(messageToSend.toJson()));
-    // Transition back to ChatRoomLoaded almost immediately. The actual new message will arrive via the WebSocket stream.
-    // This prevents the UI from getting stuck on "ChatRoomSendingMessage".
-    emit(ChatRoomLoaded(messages: currentMessages, hasReachedMaxMessages: currentHasReachedMax, roomDetails: currentRoomDetails, isWebSocketConnected: true));
   }
 
   @override

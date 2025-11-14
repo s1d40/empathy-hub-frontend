@@ -1,17 +1,17 @@
-import 'package:empathy_hub_app/features/auth/presentation/auth_cubit.dart';
-import 'package:empathy_hub_app/features/auth/presentation/models/user_model.dart';
-import 'package:empathy_hub_app/features/user_profile/presentation/cubit/user_profile_cubit.dart';
-import 'package:empathy_hub_app/core/services/user_api_service.dart';
-import 'package:empathy_hub_app/features/user_profile/presentation/widgets/user_profile_header_widget.dart';
-import 'package:empathy_hub_app/features/user_profile/presentation/cubit/user_interaction_cubit.dart'; // Import UserInteractionCubit
-import 'package:empathy_hub_app/features/user_profile/presentation/widgets/user_profile_chat_button_widget.dart';
-import 'package:empathy_hub_app/features/user_profile/presentation/widgets/user_profile_posts_list_widget.dart';
-import 'package:empathy_hub_app/features/user_profile/presentation/widgets/user_profile_comments_list_widget.dart';
+import 'package:anonymous_hubs/features/auth/presentation/auth_cubit.dart';
+import 'package:anonymous_hubs/features/auth/presentation/models/user_model.dart';
+import 'package:anonymous_hubs/features/user_profile/presentation/cubit/user_profile_cubit.dart';
+import 'package:anonymous_hubs/core/services/user_api_service.dart';
+import 'package:anonymous_hubs/features/user_profile/presentation/widgets/user_profile_header_widget.dart';
+import 'package:anonymous_hubs/features/user_profile/presentation/cubit/user_interaction_cubit.dart'; // Import UserInteractionCubit
+import 'package:anonymous_hubs/features/user_profile/presentation/widgets/user_profile_chat_button_widget.dart';
+import 'package:anonymous_hubs/features/user_profile/presentation/widgets/user_profile_posts_list_widget.dart';
+import 'package:anonymous_hubs/features/user_profile/presentation/widgets/user_profile_comments_list_widget.dart';
 
-import 'package:empathy_hub_app/core/enums/app_enums.dart'; // For ReportedItemType
-import 'package:empathy_hub_app/features/report/presentation/cubit/report_cubit.dart'; // Import ReportCubit
-import 'package:empathy_hub_app/core/services/auth_api_service.dart'; // Import AuthApiService for UserInteractionCubit
-import 'package:empathy_hub_app/features/report/presentation/widgets/report_dialog_widget.dart'; // Import ReportDialogWidget
+import 'package:anonymous_hubs/core/enums/app_enums.dart'; // For ReportedItemType
+import 'package:anonymous_hubs/features/report/presentation/cubit/report_cubit.dart'; // Import ReportCubit
+import 'package:anonymous_hubs/core/services/auth_api_service.dart'; // Import AuthApiService for UserInteractionCubit
+import 'package:anonymous_hubs/features/report/presentation/widgets/report_dialog_widget.dart'; // Import ReportDialogWidget
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart'; // For date formatting

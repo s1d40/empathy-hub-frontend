@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:empathy_hub_app/core/config/api_config.dart';
-import 'package:empathy_hub_app/core/enums/app_enums.dart';
-import 'package:empathy_hub_app/features/report/data/models/report_models.dart'; // Our barrel file for report models
+import 'package:anonymous_hubs/core/config/api_config.dart';
+import 'package:anonymous_hubs/core/enums/app_enums.dart';
+import 'package:anonymous_hubs/features/report/data/models/report_models.dart'; // Our barrel file for report models
 
 class ReportApiService {
   final http.Client _client;

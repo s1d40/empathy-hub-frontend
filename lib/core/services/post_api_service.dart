@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:empathy_hub_app/core/config/api_config.dart';
-import 'package:empathy_hub_app/core/enums/app_enums.dart'; // Import your enums
+import 'package:anonymous_hubs/core/config/api_config.dart';
+import 'package:anonymous_hubs/core/enums/app_enums.dart'; // Import your enums
 
 class PostApiService {
   final http.Client _client;

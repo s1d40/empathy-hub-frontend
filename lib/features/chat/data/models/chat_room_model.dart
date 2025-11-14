@@ -1,6 +1,7 @@
-import 'package:empathy_hub_app/features/chat/data/models/chat_message_model.dart';
-import 'package:empathy_hub_app/features/chat/data/models/user_simple_model.dart';
+import 'package:anonymous_hubs/features/chat/data/models/chat_message_model.dart';
+import 'package:anonymous_hubs/features/chat/data/models/user_simple_model.dart';
 import 'package:equatable/equatable.dart';
+import 'package:anonymous_hubs/features/chat/data/models/chat_participant_status_model.dart';
 
 class ChatRoom extends Equatable {
   final String? name;
@@ -8,7 +9,7 @@ class ChatRoom extends Equatable {
   final String anonymousRoomId;
   final DateTime createdAt;
   final DateTime? updatedAt;
-  final List<UserSimple> participants;
+  final List<ChatParticipantStatus> participants;
   final ChatMessage? lastMessage;
 
   const ChatRoom({
@@ -21,15 +22,32 @@ class ChatRoom extends Equatable {
     this.lastMessage,
   });
 
+  int unreadCount(String currentUserId) {
+    if (lastMessage == null) {
+      return 0;
+    }
+    final currentUserParticipant = participants.firstWhere(
+      (p) => p.anonymousId == currentUserId,
+      orElse: () => ChatParticipantStatus(anonymousId: '', username: ''),
+    );
+    if (currentUserParticipant.lastReadAt == null) {
+      return 1;
+    }
+    if (lastMessage!.timestamp.isAfter(currentUserParticipant.lastReadAt!)) {
+      return 1;
+    }
+    return 0;
+  }
+
   factory ChatRoom.fromJson(Map<String, dynamic> json) {
     return ChatRoom(
       name: json['name'] as String?,
-      isGroup: json['is_group'] as bool? ?? false, // Handle default if not present
+      isGroup: json['is_group'] as bool? ?? false,
       anonymousRoomId: json['anonymous_room_id'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at'] as String) : null,
       participants: (json['participants'] as List<dynamic>? ?? [])
-          .map((participantJson) => UserSimple.fromJson(participantJson as Map<String, dynamic>))
+          .map((participantJson) => ChatParticipantStatus.fromJson(participantJson as Map<String, dynamic>))
           .toList(),
       lastMessage: json['last_message'] != null
           ? ChatMessage.fromJson(json['last_message'] as Map<String, dynamic>)

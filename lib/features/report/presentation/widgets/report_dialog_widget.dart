@@ -1,6 +1,6 @@
-import 'package:empathy_hub_app/core/enums/app_enums.dart';
-import 'package:empathy_hub_app/features/report/data/models/report_models.dart';
-import 'package:empathy_hub_app/features/report/presentation/cubit/report_cubit.dart';
+import 'package:anonymous_hubs/core/enums/app_enums.dart';
+import 'package:anonymous_hubs/features/report/data/models/report_models.dart';
+import 'package:anonymous_hubs/features/report/presentation/cubit/report_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

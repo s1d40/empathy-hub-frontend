@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:empathy_hub_app/core/services/report_api_service.dart';
-import 'package:empathy_hub_app/features/auth/presentation/auth_cubit.dart';
-import 'package:empathy_hub_app/features/report/data/models/report_models.dart';
+import 'package:anonymous_hubs/core/services/report_api_service.dart';
+import 'package:anonymous_hubs/features/auth/presentation/auth_cubit.dart';
+import 'package:anonymous_hubs/features/report/data/models/report_models.dart';
 import 'package:equatable/equatable.dart';
 
 part 'report_state.dart';

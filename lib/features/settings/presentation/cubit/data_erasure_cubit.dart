@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:empathy_hub_app/core/services/auth_api_service.dart'; // Assuming methods will be here
-import 'package:empathy_hub_app/features/auth/presentation/auth_cubit.dart';
+import 'package:anonymous_hubs/core/services/auth_api_service.dart'; // Assuming methods will be here
+import 'package:anonymous_hubs/features/auth/presentation/auth_cubit.dart';
 import 'package:equatable/equatable.dart';
 
 part 'data_erasure_state.dart';

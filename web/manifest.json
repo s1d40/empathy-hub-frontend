@@ -1,11 +1,11 @@
 {
-    "name": "empathy_hub_app",
-    "short_name": "empathy_hub_app",
+    "name": "anonymous_hubs",
+    "short_name": "anonymous_hubs",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Anonymous Hubs: An anonymous social platform.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

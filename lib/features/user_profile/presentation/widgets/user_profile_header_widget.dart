@@ -1,4 +1,4 @@
-import 'package:empathy_hub_app/features/auth/presentation/models/user_model.dart';
+import 'package:anonymous_hubs/features/auth/presentation/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 

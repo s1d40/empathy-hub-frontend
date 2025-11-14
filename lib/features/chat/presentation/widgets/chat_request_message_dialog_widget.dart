@@ -1,5 +1,5 @@
-import 'package:empathy_hub_app/features/chat/data/models/chat_initiate_model.dart';
-import 'package:empathy_hub_app/features/chat/presentation/cubit/chat_initiation_cubit/chat_initiation_cubit.dart';
+import 'package:anonymous_hubs/features/chat/data/models/chat_initiate_model.dart';
+import 'package:anonymous_hubs/features/chat/presentation/cubit/chat_initiation_cubit/chat_initiation_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

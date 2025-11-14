@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
-import 'package:empathy_hub_app/core/services/comment_api_service.dart';
-import 'package:empathy_hub_app/features/auth/presentation/auth_cubit.dart';
-import 'package:empathy_hub_app/features/feed/presentation/models/comment_model.dart';
+import 'package:anonymous_hubs/core/services/comment_api_service.dart';
+import 'package:anonymous_hubs/features/auth/presentation/auth_cubit.dart';
+import 'package:anonymous_hubs/features/feed/presentation/models/comment_model.dart';
 import 'package:equatable/equatable.dart';
-import 'package:empathy_hub_app/core/enums/app_enums.dart';
+import 'package:anonymous_hubs/core/enums/app_enums.dart';
 
 part 'comments_state.dart';
 

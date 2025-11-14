@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:empathy_hub_app/core/config/api_config.dart'; // For ApiConfig.baseUrl
+import 'package:anonymous_hubs/core/config/api_config.dart'; // For ApiConfig.baseUrl
 
 class User extends Equatable {
   final String anonymousId; // Matches backend's anonymous_id (UUID string)

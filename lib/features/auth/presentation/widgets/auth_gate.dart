@@ -1,6 +1,6 @@
-import 'package:empathy_hub_app/features/auth/presentation/auth_cubit.dart';
-import 'package:empathy_hub_app/features/auth/presentation/pages/username_selection_page.dart';
-import 'package:empathy_hub_app/features/navigation/presentation/pages/main_navigation_page.dart'; // Corrected: Navigate to MainNavigationPage
+import 'package:anonymous_hubs/features/auth/presentation/auth_cubit.dart';
+import 'package:anonymous_hubs/features/auth/presentation/pages/username_selection_page.dart';
+import 'package:anonymous_hubs/features/navigation/presentation/pages/main_navigation_page.dart'; // Corrected: Navigate to MainNavigationPage
 import 'package:flutter/material.dart'; // Added Material Design import
 import 'package:flutter_bloc/flutter_bloc.dart';
 

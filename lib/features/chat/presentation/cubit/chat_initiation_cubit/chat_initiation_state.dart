@@ -24,11 +24,12 @@ class ChatInitiationSuccessRoom extends ChatInitiationState {
 class ChatInitiationSuccessRequest extends ChatInitiationState {
   final ChatRequest chatRequest;
   final String targetUserAnonymousId; // Added
+  final bool isExistingRequest; // NEW: Added flag
 
-  const ChatInitiationSuccessRequest(this.chatRequest, this.targetUserAnonymousId);
+  const ChatInitiationSuccessRequest(this.chatRequest, this.targetUserAnonymousId, {this.isExistingRequest = false}); // NEW: Default to false
 
   @override
-  List<Object?> get props => [chatRequest, targetUserAnonymousId];
+  List<Object?> get props => [chatRequest, targetUserAnonymousId, isExistingRequest];
 }
 
 class ChatInitiationFailure extends ChatInitiationState {

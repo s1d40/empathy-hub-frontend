@@ -1,16 +1,16 @@
-import 'package:empathy_hub_app/features/feed/presentation/models/post_model.dart';
+import 'package:anonymous_hubs/features/feed/presentation/models/post_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:empathy_hub_app/features/feed/presentation/cubit/comments_cubit/comments_cubit.dart';
-import 'package:empathy_hub_app/core/services/comment_api_service.dart';
-import 'package:empathy_hub_app/features/auth/presentation/auth_cubit.dart';
-import 'package:empathy_hub_app/features/feed/presentation/widgets/comment_item_widget.dart';
-import 'package:empathy_hub_app/features/user_profile/presentation/pages/user_profile_page.dart'; // Added import
-import 'package:empathy_hub_app/features/feed/presentation/cubit/post_item_cubit/post_item_cubit.dart'; // Import PostItemCubit
-import 'package:empathy_hub_app/core/services/post_api_service.dart'; // Import PostApiService
-import 'package:empathy_hub_app/core/enums/app_enums.dart'; // For ReportedItemType
-import 'package:empathy_hub_app/features/report/presentation/cubit/report_cubit.dart'; // Import ReportCubit
-import 'package:empathy_hub_app/features/report/presentation/widgets/report_dialog_widget.dart'; // Import ReportDialogWidget
+import 'package:anonymous_hubs/features/feed/presentation/cubit/comments_cubit/comments_cubit.dart';
+import 'package:anonymous_hubs/core/services/comment_api_service.dart';
+import 'package:anonymous_hubs/features/auth/presentation/auth_cubit.dart';
+import 'package:anonymous_hubs/features/feed/presentation/widgets/comment_item_widget.dart';
+import 'package:anonymous_hubs/features/user_profile/presentation/pages/user_profile_page.dart'; // Added import
+import 'package:anonymous_hubs/features/feed/presentation/cubit/post_item_cubit/post_item_cubit.dart'; // Import PostItemCubit
+import 'package:anonymous_hubs/core/services/post_api_service.dart'; // Import PostApiService
+import 'package:anonymous_hubs/core/enums/app_enums.dart'; // For ReportedItemType
+import 'package:anonymous_hubs/features/report/presentation/cubit/report_cubit.dart'; // Import ReportCubit
+import 'package:anonymous_hubs/features/report/presentation/widgets/report_dialog_widget.dart'; // Import ReportDialogWidget
 
 class PostDetailsPage extends StatefulWidget {
   final Post post;

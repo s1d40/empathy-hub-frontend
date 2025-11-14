@@ -5,13 +5,13 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:empathy_hub_app/core/services/auth_api_service.dart';
-import 'package:empathy_hub_app/features/auth/presentation/auth_cubit.dart';
-import 'package:empathy_hub_app/features/auth/presentation/pages/username_selection_page.dart';
-import 'package:empathy_hub_app/features/auth/presentation/widgets/auth_gate.dart';
-import 'package:empathy_hub_app/features/feed/presentation/widgets/feed_widget.dart';
-import 'package:empathy_hub_app/features/home/presentation/pages/home_page.dart';
-import 'package:empathy_hub_app/features/navigation/presentation/pages/main_navigation_page.dart';
+import 'package:anonymous_hubs/core/services/auth_api_service.dart';
+import 'package:anonymous_hubs/features/auth/presentation/auth_cubit.dart';
+import 'package:anonymous_hubs/features/auth/presentation/pages/username_selection_page.dart';
+import 'package:anonymous_hubs/features/auth/presentation/widgets/auth_gate.dart';
+import 'package:anonymous_hubs/features/feed/presentation/widgets/feed_widget.dart';
+import 'package:anonymous_hubs/features/home/presentation/pages/home_page.dart';
+import 'package:anonymous_hubs/features/navigation/presentation/pages/main_navigation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';

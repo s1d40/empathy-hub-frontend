@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
-import 'package:empathy_hub_app/core/services/auth_api_service.dart';
-import 'package:empathy_hub_app/core/services/user_api_service.dart';
-import 'package:empathy_hub_app/features/auth/presentation/auth_cubit.dart';
-import 'package:empathy_hub_app/features/user/data/models/user_models.dart'; // For UserSimple
+import 'package:anonymous_hubs/core/services/auth_api_service.dart';
+import 'package:anonymous_hubs/core/services/user_api_service.dart';
+import 'package:anonymous_hubs/features/auth/presentation/auth_cubit.dart';
+import 'package:anonymous_hubs/features/user/data/models/user_models.dart'; // For UserSimple
 import 'package:equatable/equatable.dart';
 
 part 'user_interaction_lists_state.dart';

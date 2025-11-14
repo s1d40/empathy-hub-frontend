@@ -1,6 +1,8 @@
+# Gemini Project Analysis: Anonymous Hubs Frontend
+
 ## Project Overview
 
-The Empathy Hub frontend is a Flutter application designed for mobile, web, and desktop. It provides a platform for anonymous users to interact, share content, and communicate with empathy. The application is built with a feature-driven architecture, using the BLoC pattern (specifically Cubits) for state management.
+The Anonymous Hubs frontend is a Flutter application designed for mobile, web, and desktop. It provides a platform for anonymous users to interact, share content, and communicate with empathy. The application is built with a feature-driven architecture, using the BLoC pattern (specifically Cubits) for state management. This application is a sub-app of the main `sfaisolutions` app.
 
 ## Core Architecture & State Management
 

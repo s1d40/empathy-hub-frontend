@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:empathy_hub_app/features/feed/presentation/cubit/create_post_cubit/create_post_cubit.dart';
-import 'package:empathy_hub_app/features/auth/presentation/auth_cubit.dart';
-import 'package:empathy_hub_app/core/services/post_api_service.dart';
-import 'package:empathy_hub_app/features/feed/presentation/cubit/feed_cubit.dart'; // To refresh feed
+import 'package:anonymous_hubs/features/feed/presentation/cubit/create_post_cubit/create_post_cubit.dart';
+import 'package:anonymous_hubs/features/auth/presentation/auth_cubit.dart';
+import 'package:anonymous_hubs/core/services/post_api_service.dart';
+import 'package:anonymous_hubs/features/feed/presentation/cubit/feed_cubit.dart'; // To refresh feed
 import 'dart:async'; // Import for Timer
 
 class CreatePostPage extends StatefulWidget {
@@ -84,8 +84,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
             // Add a small delay before refreshing the feed to allow backend processing
             Future.delayed(const Duration(seconds: 1), () {
               // Ensure FeedCubit is accessible in the context where CreatePostPage is used
-              context.read<FeedCubit>().refreshPosts();
-              print("[CreatePostPage] Feed refresh initiated after delay.");
+              if (mounted) { // Check if the widget is still mounted
+                context.read<FeedCubit>().refreshPosts();
+                print("[CreatePostPage] Feed refresh initiated after delay.");
+              }
             });
             // Navigate back to the previous screen (HomePage)
             _startPostCooldown(); // Start cooldown

@@ -1,4 +1,4 @@
-import 'package:empathy_hub_app/features/chat/data/models/chat_enums.dart';
+import 'package:anonymous_hubs/features/chat/data/models/chat_enums.dart';
 import 'package:flutter/material.dart';
 
 class ChatAvailabilitySettingWidget extends StatelessWidget {

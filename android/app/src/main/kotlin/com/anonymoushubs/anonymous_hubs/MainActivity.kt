@@ -1,4 +1,4 @@
-package com.empathyhub.empathy_hub_app
+package com.anonymoushubs.anonymous_hubs
 
 import io.flutter.embedding.android.FlutterActivity
 

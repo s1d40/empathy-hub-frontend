@@ -1,8 +1,7 @@
 Launching lib/main.dart on Linux in debug mode...
 Building Linux application...                                   
-✓ Built build/linux/x64/debug/bundle/empathy_hub_app
-flutter: DEV_MODE: SharedPreferences cleared for fresh start.
-Syncing files to device Linux...                                   196ms
+✓ Built build/linux/x64/debug/bundle/anonymous_hubs
+Syncing files to device Linux...                                   163ms
 
 Flutter run key commands.
 r Hot reload. 🔥🔥🔥
@@ -12,8 +11,208 @@ d Detach (terminate "flutter run" but leave application running).
 c Clear the screen
 q Quit (terminate the application on the device).
 
-A Dart VM Service on Linux is available at: http://127.0.0.1:43053/hWjkto205P0=/
-The Flutter DevTools debugger and profiler on Linux is available at: http://127.0.0.1:9101?uri=http://127.0.0.1:43053/hWjkto205P0=/
+A Dart VM Service on Linux is available at: http://127.0.0.1:44647/4iKeZOPDLZE=/
+The Flutter DevTools debugger and profiler on Linux is available at: http://127.0.0.1:9101?uri=http://127.0.0.1:44647/4iKeZOPDLZE=/
+flutter: Notification WebSocket disconnected.
+flutter: Notification WebSocket connected to: ws://127.0.0.1:8000/api/v1/notifications/ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBbm9ueW1vdXM0QkRGIiwiYW5vbnltb3VzX2lkIjoiY2Y0NTRjMzItODU5NC00MDkzLTg0MWItODdiNDNlNTE1MjEyIiwiZXhwIjoxNzYzNjg0NjA2fQ.sQ0-7zTTAnVISMQLLpdcgPz9HnhxhlUgY6mskgCmFvQ
 
+══╡ EXCEPTION CAUGHT BY IMAGE RESOURCE SERVICE ╞════════════════════════════════════════════════════
+The following HttpException was thrown resolving an image codec:
+Connection closed before full header was received, uri =
+https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/59.jpg
 
+When the exception was thrown, this was the stack
 
+Image provider:
+  NetworkImage("https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/59.jpg",
+  scale: 1.0)
+Image key:
+  NetworkImage("https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/59.jpg",
+  scale: 1.0)
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Another exception was thrown: HttpException: Connection closed before full header was received, uri = https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/142.jpg
+Another exception was thrown: HttpException: Connection closed before full header was received, uri = https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/48.jpg
+Another exception was thrown: HttpException: Connection closed before full header was received, uri = https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/152.jpg
+Another exception was thrown: HttpException: Connection closed before full header was received, uri = https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/66.jpg
+Another exception was thrown: HttpException: Connection closed before full header was received, uri = https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/23.jpg
+flutter: [CreatePostCubit] Emitting CreatePostInProgress for title: 'null'
+flutter: [CreatePostCubit] Calling _postApiService.createPost...
+flutter: CreatePostPage listener received state: CreatePostInProgress()
+flutter: CreatePostPage listener received state: CreatePostInProgress()
+flutter: [CreatePostCubit] _postApiService.createPost returned: {title: null, content: oíj0ijijoijpiuh=oih0i0ih0j, author: {id: cf454c32-8594-4093-841b-87b43e515212, username: Anonymous4BDF, avatar_url: https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/170.jpg, chat_availability: open_to_chat}, comment_count: 0, is_active: true, is_edited: false, upvotes: 0, downvotes: 0, created_at: 2025-11-14T00:25:02.385000Z, updated_at: 2025-11-14T00:25:02.385000Z, id: 0799c6f5-7196-4494-a403-8343656dba24}
+flutter: [CreatePostCubit] Attempting Post.fromJson with data: {title: null, content: oíj0ijijoijpiuh=oih0i0ih0j, author: {id: cf454c32-8594-4093-841b-87b43e515212, username: Anonymous4BDF, avatar_url: https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/170.jpg, chat_availability: open_to_chat}, comment_count: 0, is_active: true, is_edited: false, upvotes: 0, downvotes: 0, created_at: 2025-11-14T00:25:02.385000Z, updated_at: 2025-11-14T00:25:02.385000Z, id: 0799c6f5-7196-4494-a403-8343656dba24}
+flutter: [Post.fromJson] Raw JSON: {title: null, content: oíj0ijijoijpiuh=oih0i0ih0j, author: {id: cf454c32-8594-4093-841b-87b43e515212, username: Anonymous4BDF, avatar_url: https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/170.jpg, chat_availability: open_to_chat}, comment_count: 0, is_active: true, is_edited: false, upvotes: 0, downvotes: 0, created_at: 2025-11-14T00:25:02.385000Z, updated_at: 2025-11-14T00:25:02.385000Z, id: 0799c6f5-7196-4494-a403-8343656dba24}
+flutter: [Post.fromJson] id: 0799c6f5-7196-4494-a403-8343656dba24, Type: String
+flutter: [Post.fromJson] title: null, Type: Null
+flutter: [Post.fromJson] content: oíj0ijijoijpiuh=oih0i0ih0j, Type: String
+flutter: [Post.fromJson] author: UserSimple(cf454c32-8594-4093-841b-87b43e515212, Anonymous4BDF, https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/170.jpg, open_to_chat), Type: UserSimple
+flutter: [Post.fromJson] commentCount: 0, Type: int
+flutter: [Post.fromJson] isActive: true, Type: bool
+flutter: [Post.fromJson] isEdited: false, Type: bool
+flutter: [Post.fromJson] upvotes: 0, Type: int
+flutter: [Post.fromJson] downvotes: 0, Type: int
+flutter: [Post.fromJson] createdAt: 2025-11-14 00:25:02.385Z, Type: DateTime
+flutter: [Post.fromJson] updatedAt: 2025-11-14 00:25:02.385Z, Type: DateTime
+flutter: [CreatePostCubit] Post.fromJson successful. New post ID: 0799c6f5-7196-4494-a403-8343656dba24, Title: null
+flutter: [CreatePostCubit] Emitting CreatePostSuccess
+flutter: CreatePostPage listener received state: CreatePostSuccess(Post(0799c6f5-7196-4494-a403-8343656dba24, null, oíj0ijijoijpiuh=oih0i0ih0j, UserSimple(cf454c32-8594-4093-841b-87b43e515212, Anonymous4BDF, https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/170.jpg, open_to_chat), 0, true, false, 0, 0, 2025-11-14 00:25:02.385Z, 2025-11-14 00:25:02.385Z))
+flutter: CreatePostPage listener received state: CreatePostSuccess(Post(0799c6f5-7196-4494-a403-8343656dba24, null, oíj0ijijoijpiuh=oih0i0ih0j, UserSimple(cf454c32-8594-4093-841b-87b43e515212, Anonymous4BDF, https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/170.jpg, open_to_chat), 0, true, false, 0, 0, 2025-11-14 00:25:02.385Z, 2025-11-14 00:25:02.385Z))
+flutter: [CreatePostPage] CreatePostSuccess detected. Attempting to pop route.
+flutter: [Post.fromJson] Raw JSON: {title: null, content: oíj0ijijoijpiuh=oih0i0ih0j, author: {id: cf454c32-8594-4093-841b-87b43e515212, username: Anonymous4BDF, avatar_url: https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/170.jpg, chat_availability: open_to_chat}, comment_count: 0, is_active: true, is_edited: false, upvotes: 0, downvotes: 0, created_at: 2025-11-14T00:25:02.385000Z, updated_at: 2025-11-14T00:25:02.385000Z, id: 0799c6f5-7196-4494-a403-8343656dba24}
+flutter: [Post.fromJson] id: 0799c6f5-7196-4494-a403-8343656dba24, Type: String
+flutter: [Post.fromJson] title: null, Type: Null
+flutter: [Post.fromJson] content: oíj0ijijoijpiuh=oih0i0ih0j, Type: String
+flutter: [Post.fromJson] author: UserSimple(cf454c32-8594-4093-841b-87b43e515212, Anonymous4BDF, https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/170.jpg, open_to_chat), Type: UserSimple
+flutter: [Post.fromJson] commentCount: 0, Type: int
+flutter: [Post.fromJson] isActive: true, Type: bool
+flutter: [Post.fromJson] isEdited: false, Type: bool
+flutter: [Post.fromJson] upvotes: 0, Type: int
+flutter: [Post.fromJson] downvotes: 0, Type: int
+flutter: [Post.fromJson] createdAt: 2025-11-14 00:25:02.385Z, Type: DateTime
+flutter: [Post.fromJson] updatedAt: 2025-11-14 00:25:02.385Z, Type: DateTime
+flutter: [Post.fromJson] Raw JSON: {title: null, content: ididhskshdkajdksjzksj, author: {id: 08e60e09-291d-4b9a-b9c1-e6a17faf08da, username: Anonymous813D, avatar_url: https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/173.jpg, chat_availability: request_only}, comment_count: 0, is_active: true, is_edited: false, upvotes: 0, downvotes: 0, created_at: 2025-11-14T00:25:58.278000Z, updated_at: 2025-11-14T00:25:58.278000Z, id: 9d6c57ae-10ee-4ccf-ae36-2c717fc20fcb}
+flutter: [Post.fromJson] id: 9d6c57ae-10ee-4ccf-ae36-2c717fc20fcb, Type: String
+flutter: [Post.fromJson] title: null, Type: Null
+flutter: [Post.fromJson] content: ididhskshdkajdksjzksj, Type: String
+flutter: [Post.fromJson] author: UserSimple(08e60e09-291d-4b9a-b9c1-e6a17faf08da, Anonymous813D, https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/173.jpg, request_only), Type: UserSimple
+flutter: [Post.fromJson] commentCount: 0, Type: int
+flutter: [Post.fromJson] isActive: true, Type: bool
+flutter: [Post.fromJson] isEdited: false, Type: bool
+flutter: [Post.fromJson] upvotes: 0, Type: int
+flutter: [Post.fromJson] downvotes: 0, Type: int
+flutter: [Post.fromJson] createdAt: 2025-11-14 00:25:58.278Z, Type: DateTime
+flutter: [Post.fromJson] updatedAt: 2025-11-14 00:25:58.278Z, Type: DateTime
+flutter: [Post.fromJson] Raw JSON: {title: null, content: oíj0ijijoijpiuh=oih0i0ih0j, author: {id: cf454c32-8594-4093-841b-87b43e515212, username: Anonymous4BDF, avatar_url: https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/170.jpg, chat_availability: open_to_chat}, comment_count: 0, is_active: true, is_edited: false, upvotes: 0, downvotes: 0, created_at: 2025-11-14T00:25:02.385000Z, updated_at: 2025-11-14T00:25:02.385000Z, id: 0799c6f5-7196-4494-a403-8343656dba24}
+flutter: [Post.fromJson] id: 0799c6f5-7196-4494-a403-8343656dba24, Type: String
+flutter: [Post.fromJson] title: null, Type: Null
+flutter: [Post.fromJson] content: oíj0ijijoijpiuh=oih0i0ih0j, Type: String
+flutter: [Post.fromJson] author: UserSimple(cf454c32-8594-4093-841b-87b43e515212, Anonymous4BDF, https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/170.jpg, open_to_chat), Type: UserSimple
+flutter: [Post.fromJson] commentCount: 0, Type: int
+flutter: [Post.fromJson] isActive: true, Type: bool
+flutter: [Post.fromJson] isEdited: false, Type: bool
+flutter: [Post.fromJson] upvotes: 0, Type: int
+flutter: [Post.fromJson] downvotes: 0, Type: int
+flutter: [Post.fromJson] createdAt: 2025-11-14 00:25:02.385Z, Type: DateTime
+flutter: [Post.fromJson] updatedAt: 2025-11-14 00:25:02.385Z, Type: DateTime
+flutter: [Post.fromJson] Raw JSON: {title: null, content: ididhskshdkajdksjzksj, author: {id: 08e60e09-291d-4b9a-b9c1-e6a17faf08da, username: Anonymous813D, avatar_url: https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/173.jpg, chat_availability: request_only}, comment_count: 1, is_active: true, is_edited: false, upvotes: 0, downvotes: 0, created_at: 2025-11-14T00:25:58.278000Z, updated_at: 2025-11-14T00:25:58.278000Z, id: 9d6c57ae-10ee-4ccf-ae36-2c717fc20fcb}
+flutter: [Post.fromJson] id: 9d6c57ae-10ee-4ccf-ae36-2c717fc20fcb, Type: String
+flutter: [Post.fromJson] title: null, Type: Null
+flutter: [Post.fromJson] content: ididhskshdkajdksjzksj, Type: String
+flutter: [Post.fromJson] author: UserSimple(08e60e09-291d-4b9a-b9c1-e6a17faf08da, Anonymous813D, https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/173.jpg, request_only), Type: UserSimple
+flutter: [Post.fromJson] commentCount: 1, Type: int
+flutter: [Post.fromJson] isActive: true, Type: bool
+flutter: [Post.fromJson] isEdited: false, Type: bool
+flutter: [Post.fromJson] upvotes: 0, Type: int
+flutter: [Post.fromJson] downvotes: 0, Type: int
+flutter: [Post.fromJson] createdAt: 2025-11-14 00:25:58.278Z, Type: DateTime
+flutter: [Post.fromJson] updatedAt: 2025-11-14 00:25:58.278Z, Type: DateTime
+flutter: [Post.fromJson] Raw JSON: {title: null, content: oíj0ijijoijpiuh=oih0i0ih0j, author: {id: cf454c32-8594-4093-841b-87b43e515212, username: Anonymous4BDF, avatar_url: https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/170.jpg, chat_availability: open_to_chat}, comment_count: 0, is_active: true, is_edited: false, upvotes: 0, downvotes: 0, created_at: 2025-11-14T00:25:02.385000Z, updated_at: 2025-11-14T00:25:02.385000Z, id: 0799c6f5-7196-4494-a403-8343656dba24}
+flutter: [Post.fromJson] id: 0799c6f5-7196-4494-a403-8343656dba24, Type: String
+flutter: [Post.fromJson] title: null, Type: Null
+flutter: [Post.fromJson] content: oíj0ijijoijpiuh=oih0i0ih0j, Type: String
+flutter: [Post.fromJson] author: UserSimple(cf454c32-8594-4093-841b-87b43e515212, Anonymous4BDF, https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/170.jpg, open_to_chat), Type: UserSimple
+flutter: [Post.fromJson] commentCount: 0, Type: int
+flutter: [Post.fromJson] isActive: true, Type: bool
+flutter: [Post.fromJson] isEdited: false, Type: bool
+flutter: [Post.fromJson] upvotes: 0, Type: int
+flutter: [Post.fromJson] downvotes: 0, Type: int
+flutter: [Post.fromJson] createdAt: 2025-11-14 00:25:02.385Z, Type: DateTime
+flutter: [Post.fromJson] updatedAt: 2025-11-14 00:25:02.385Z, Type: DateTime
+flutter: Notification WebSocket disconnected.
+flutter: Notification WebSocket connected to: ws://127.0.0.1:8000/api/v1/notifications/ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBbm9ueW1vdXM0QkRGIiwiYW5vbnltb3VzX2lkIjoiY2Y0NTRjMzItODU5NC00MDkzLTg0MWItODdiNDNlNTE1MjEyIiwiZXhwIjoxNzYzNjg0NjA2fQ.sQ0-7zTTAnVISMQLLpdcgPz9HnhxhlUgY6mskgCmFvQ
+flutter: Notification WebSocket disconnected.
+flutter: Notification WebSocket connected to: ws://127.0.0.1:8000/api/v1/notifications/ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBbm9ueW1vdXM0QkRGIiwiYW5vbnltb3VzX2lkIjoiY2Y0NTRjMzItODU5NC00MDkzLTg0MWItODdiNDNlNTE1MjEyIiwiZXhwIjoxNzYzNjg0NjA2fQ.sQ0-7zTTAnVISMQLLpdcgPz9HnhxhlUgY6mskgCmFvQ
+flutter: Notification WebSocket disconnected.
+flutter: SettingsPage: User is Unauthenticated. AuthGate will navigate.
+flutter: Notification WebSocket disconnected.
+flutter: SettingsPage: User is Unauthenticated. AuthGate will navigate.
+flutter: Notification WebSocket disconnected.
+flutter: SettingsPage: User is Unauthenticated. AuthGate will navigate.
+Another exception was thrown: HttpException: Connection closed before full header was received, uri = https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/118.jpg
+Another exception was thrown: HttpException: Connection closed before full header was received, uri = https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/120.jpg
+Another exception was thrown: HttpException: Connection closed before full header was received, uri = https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/91.jpg
+
+Performing hot restart...                                       
+Restarted application in 905ms.
+flutter: Notification WebSocket disconnected.
+flutter: Notification WebSocket connected to: ws://127.0.0.1:8000/api/v1/notifications/ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBbm9ueW1vdXM2Qzc4IiwiYW5vbnltb3VzX2lkIjoiNjg3Mjg0M2UtMWMyYS00YmI4LTk3YmMtMDU2NjFhMDA0ODVjIiwiZXhwIjoxNzYzNjg1NTU5fQ.5oI5rAq_2aqP0TpqkID55cT-NLER91zHlQMi3nDyROM
+flutter: [Post.fromJson] Raw JSON: {title: null, content: ididhskshdkajdksjzksj, author: {id: 08e60e09-291d-4b9a-b9c1-e6a17faf08da, username: Anonymous813D, avatar_url: https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/173.jpg, chat_availability: request_only}, comment_count: 0, is_active: true, is_edited: false, upvotes: 0, downvotes: 0, created_at: 2025-11-14T00:25:58.278000Z, updated_at: 2025-11-14T00:25:58.278000Z, id: 9d6c57ae-10ee-4ccf-ae36-2c717fc20fcb}
+flutter: [Post.fromJson] id: 9d6c57ae-10ee-4ccf-ae36-2c717fc20fcb, Type: String
+flutter: [Post.fromJson] title: null, Type: Null
+flutter: [Post.fromJson] content: ididhskshdkajdksjzksj, Type: String
+flutter: [Post.fromJson] author: UserSimple(08e60e09-291d-4b9a-b9c1-e6a17faf08da, Anonymous813D, https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/173.jpg, request_only), Type: UserSimple
+flutter: [Post.fromJson] commentCount: 0, Type: int
+flutter: [Post.fromJson] isActive: true, Type: bool
+flutter: [Post.fromJson] isEdited: false, Type: bool
+flutter: [Post.fromJson] upvotes: 0, Type: int
+flutter: [Post.fromJson] downvotes: 0, Type: int
+flutter: [Post.fromJson] createdAt: 2025-11-14 00:25:58.278Z, Type: DateTime
+flutter: [Post.fromJson] updatedAt: 2025-11-14 00:25:58.278Z, Type: DateTime
+flutter: [Post.fromJson] Raw JSON: {title: null, content: sgkwtiwtiwtiwtowtostow, author: {id: 08e60e09-291d-4b9a-b9c1-e6a17faf08da, username: Anonymous813D, avatar_url: https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/173.jpg, chat_availability: request_only}, comment_count: 0, is_active: true, is_edited: false, upvotes: 0, downvotes: 0, created_at: 2025-11-14T00:39:34.658000Z, updated_at: 2025-11-14T00:39:34.658000Z, id: 6ac024fb-efcf-4052-9aba-8faf74928c8f}
+flutter: [Post.fromJson] id: 6ac024fb-efcf-4052-9aba-8faf74928c8f, Type: String
+flutter: [Post.fromJson] title: null, Type: Null
+flutter: [Post.fromJson] content: sgkwtiwtiwtiwtowtostow, Type: String
+flutter: [Post.fromJson] author: UserSimple(08e60e09-291d-4b9a-b9c1-e6a17faf08da, Anonymous813D, https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/173.jpg, request_only), Type: UserSimple
+flutter: [Post.fromJson] commentCount: 0, Type: int
+flutter: [Post.fromJson] isActive: true, Type: bool
+flutter: [Post.fromJson] isEdited: false, Type: bool
+flutter: [Post.fromJson] upvotes: 0, Type: int
+flutter: [Post.fromJson] downvotes: 0, Type: int
+flutter: [Post.fromJson] createdAt: 2025-11-14 00:39:34.658Z, Type: DateTime
+flutter: [Post.fromJson] updatedAt: 2025-11-14 00:39:34.658Z, Type: DateTime
+flutter: [Post.fromJson] Raw JSON: {title: null, content: ididhskshdkajdksjzksj, author: {id: 08e60e09-291d-4b9a-b9c1-e6a17faf08da, username: Anonymous813D, avatar_url: https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/173.jpg, chat_availability: request_only}, comment_count: 0, is_active: true, is_edited: false, upvotes: 0, downvotes: 0, created_at: 2025-11-14T00:25:58.278000Z, updated_at: 2025-11-14T00:25:58.278000Z, id: 9d6c57ae-10ee-4ccf-ae36-2c717fc20fcb}
+flutter: [Post.fromJson] id: 9d6c57ae-10ee-4ccf-ae36-2c717fc20fcb, Type: String
+flutter: [Post.fromJson] title: null, Type: Null
+flutter: [Post.fromJson] content: ididhskshdkajdksjzksj, Type: String
+flutter: [Post.fromJson] author: UserSimple(08e60e09-291d-4b9a-b9c1-e6a17faf08da, Anonymous813D, https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/173.jpg, request_only), Type: UserSimple
+flutter: [Post.fromJson] commentCount: 0, Type: int
+flutter: [Post.fromJson] isActive: true, Type: bool
+flutter: [Post.fromJson] isEdited: false, Type: bool
+flutter: [Post.fromJson] upvotes: 0, Type: int
+flutter: [Post.fromJson] downvotes: 0, Type: int
+flutter: [Post.fromJson] createdAt: 2025-11-14 00:25:58.278Z, Type: DateTime
+flutter: [Post.fromJson] updatedAt: 2025-11-14 00:25:58.278Z, Type: DateTime
+flutter: Notification WebSocket disconnected.
+flutter: Notification WebSocket connected to: ws://127.0.0.1:8000/api/v1/notifications/ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBbm9ueW1vdXM2Qzc4IiwiYW5vbnltb3VzX2lkIjoiNjg3Mjg0M2UtMWMyYS00YmI4LTk3YmMtMDU2NjFhMDA0ODVjIiwiZXhwIjoxNzYzNjg1NTU5fQ.5oI5rAq_2aqP0TpqkID55cT-NLER91zHlQMi3nDyROM
+flutter: Notification WebSocket disconnected.
+flutter: Notification WebSocket connected to: ws://127.0.0.1:8000/api/v1/notifications/ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBbm9ueW1vdXM2Qzc4IiwiYW5vbnltb3VzX2lkIjoiNjg3Mjg0M2UtMWMyYS00YmI4LTk3YmMtMDU2NjFhMDA0ODVjIiwiZXhwIjoxNzYzNjg1NTU5fQ.5oI5rAq_2aqP0TpqkID55cT-NLER91zHlQMi3nDyROM
+flutter: Notification WebSocket disconnected.
+flutter: SettingsPage: User is Unauthenticated. AuthGate will navigate.
+flutter: Notification WebSocket disconnected.
+flutter: SettingsPage: User is Unauthenticated. AuthGate will navigate.
+flutter: Notification WebSocket disconnected.
+flutter: SettingsPage: User is Unauthenticated. AuthGate will navigate.
+flutter: Notification WebSocket disconnected.
+flutter: Notification WebSocket connected to: ws://127.0.0.1:8000/api/v1/notifications/ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBbm9ueW1vdXM1QzI2IiwiYW5vbnltb3VzX2lkIjoiY2UyZWYzYjUtNDMxZC00MzMzLWI5YjgtOWU5N2ZkNDdmYjlkIiwiZXhwIjoxNzYzNjg1NjQ1fQ.fE3IipZZsSKVKBwosOTkHdzfxlE-QtJqsdr_AvMkaI8
+
+Performing hot restart...                                       
+Restarted application in 663ms.
+flutter: Notification WebSocket disconnected.
+flutter: Notification WebSocket connected to: ws://127.0.0.1:8000/api/v1/notifications/ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBbm9ueW1vdXM1QzI2IiwiYW5vbnltb3VzX2lkIjoiY2UyZWYzYjUtNDMxZC00MzMzLWI5YjgtOWU5N2ZkNDdmYjlkIiwiZXhwIjoxNzYzNjg1NjQ1fQ.fE3IipZZsSKVKBwosOTkHdzfxlE-QtJqsdr_AvMkaI8
+flutter: [Post.fromJson] Raw JSON: {title: null, content: sgkwtiwtiwtiwtowtostow, author: {id: 08e60e09-291d-4b9a-b9c1-e6a17faf08da, username: Anonymous813D, avatar_url: https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/173.jpg, chat_availability: request_only}, comment_count: 0, is_active: true, is_edited: false, upvotes: 0, downvotes: 0, created_at: 2025-11-14T00:39:34.658000Z, updated_at: 2025-11-14T00:39:34.658000Z, id: 6ac024fb-efcf-4052-9aba-8faf74928c8f}
+flutter: [Post.fromJson] id: 6ac024fb-efcf-4052-9aba-8faf74928c8f, Type: String
+flutter: [Post.fromJson] title: null, Type: Null
+flutter: [Post.fromJson] content: sgkwtiwtiwtiwtowtostow, Type: String
+flutter: [Post.fromJson] author: UserSimple(08e60e09-291d-4b9a-b9c1-e6a17faf08da, Anonymous813D, https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/173.jpg, request_only), Type: UserSimple
+flutter: [Post.fromJson] commentCount: 0, Type: int
+flutter: [Post.fromJson] isActive: true, Type: bool
+flutter: [Post.fromJson] isEdited: false, Type: bool
+flutter: [Post.fromJson] upvotes: 0, Type: int
+flutter: [Post.fromJson] downvotes: 0, Type: int
+flutter: [Post.fromJson] createdAt: 2025-11-14 00:39:34.658Z, Type: DateTime
+flutter: [Post.fromJson] updatedAt: 2025-11-14 00:39:34.658Z, Type: DateTime
+flutter: [Post.fromJson] Raw JSON: {title: null, content: ididhskshdkajdksjzksj, author: {id: 08e60e09-291d-4b9a-b9c1-e6a17faf08da, username: Anonymous813D, avatar_url: https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/173.jpg, chat_availability: request_only}, comment_count: 0, is_active: true, is_edited: false, upvotes: 0, downvotes: 0, created_at: 2025-11-14T00:25:58.278000Z, updated_at: 2025-11-14T00:25:58.278000Z, id: 9d6c57ae-10ee-4ccf-ae36-2c717fc20fcb}
+flutter: [Post.fromJson] id: 9d6c57ae-10ee-4ccf-ae36-2c717fc20fcb, Type: String
+flutter: [Post.fromJson] title: null, Type: Null
+flutter: [Post.fromJson] content: ididhskshdkajdksjzksj, Type: String
+flutter: [Post.fromJson] author: UserSimple(08e60e09-291d-4b9a-b9c1-e6a17faf08da, Anonymous813D, https://storage.googleapis.com/empathy-hub-avatars-anonymous-hubs-477707/static/avatars/173.jpg, request_only), Type: UserSimple
+flutter: [Post.fromJson] commentCount: 0, Type: int
+flutter: [Post.fromJson] isActive: true, Type: bool
+flutter: [Post.fromJson] isEdited: false, Type: bool
+flutter: [Post.fromJson] upvotes: 0, Type: int
+flutter: [Post.fromJson] downvotes: 0, Type: int
+flutter: [Post.fromJson] createdAt: 2025-11-14 00:25:58.278Z, Type: DateTime
+flutter: [Post.fromJson] updatedAt: 2025-11-14 00:25:58.278Z, Type: DateTime
+Application finished.
+the Dart compiler exited unexpectedly.

@@ -1,92 +1,102 @@
-import 'package:empathy_hub_app/features/auth/presentation/auth_cubit.dart';
-import 'package:empathy_hub_app/features/chat/data/models/chat_enums.dart'; // For ChatAvailability enum and extension
+import 'package:anonymous_hubs/features/auth/presentation/auth_cubit.dart';
+import 'package:anonymous_hubs/features/chat/data/models/chat_enums.dart'; // For ChatAvailability enum and extension
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:empathy_hub_app/features/settings/presentation/cubit/data_erasure_cubit.dart'; // Import DataErasureCubit
-import 'package:empathy_hub_app/features/settings/presentation/pages/muted_users_page.dart'; // Import MutedUsersPage
-import 'package:empathy_hub_app/features/settings/presentation/pages/blocked_users_page.dart'; // Import BlockedUsersPage
-import 'package:empathy_hub_app/features/settings/presentation/widgets/chat_availability_setting_widget.dart'; // Import the new widget
+import 'package:anonymous_hubs/features/settings/presentation/cubit/data_erasure_cubit.dart'; // Import DataErasureCubit
+import 'package:anonymous_hubs/features/settings/presentation/pages/muted_users_page.dart'; // Import MutedUsersPage
+import 'package:anonymous_hubs/features/settings/presentation/pages/blocked_users_page.dart'; // Import BlockedUsersPage
+import 'package:anonymous_hubs/features/settings/presentation/widgets/chat_availability_setting_widget.dart'; // Import the new widget
+import 'package:anonymous_hubs/core/services/auth_api_service.dart'; // Import AuthApiService
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-      ),
-      body: MultiBlocListener(
-        listeners: [
-          BlocListener<AuthCubit, AuthState>(
-            listener: (context, state) {
-              final bool isModalRouteActive = ModalRoute.of(context)?.isCurrent == false;
-              if (state is AuthDeletionInProgress) {
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (BuildContext dialogContext) {
-                    return const AlertDialog(
-                      content: Row(
-                        children: [
-                          CircularProgressIndicator(),
-                          SizedBox(width: 20),
-                          Text("Deleting account..."),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              } else if (state is AuthDeletionFailure) {
-                if (isModalRouteActive) Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.message), backgroundColor: Colors.redAccent),
-                );
-              } else if (state is Unauthenticated) {
-                if (isModalRouteActive) Navigator.of(context).pop();
-                print("SettingsPage: User is Unauthenticated. AuthGate will navigate.");
-              } else if (state is AuthFailure) {
-                if (isModalRouteActive) Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('An error occurred: ${state.message}'), backgroundColor: Colors.redAccent),
-                );
-              }
-            },
+    return SafeArea(
+      bottom: true,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Settings'),
+        ),
+        body: MultiBlocListener(
+          listeners: [
+            BlocListener<AuthCubit, AuthState>(
+              listener: (context, state) {
+                final bool isModalRouteActive = ModalRoute.of(context)?.isCurrent == false;
+                if (state is AuthDeletionInProgress) {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext dialogContext) {
+                      return const AlertDialog(
+                        content: Row(
+                          children: [
+                            CircularProgressIndicator(),
+                            SizedBox(width: 20),
+                            Text("Deleting account..."),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                } else if (state is AuthDeletionFailure) {
+                  if (isModalRouteActive) Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(state.message), backgroundColor: Colors.redAccent),
+                  );
+                } else if (state is Unauthenticated) {
+                  if (isModalRouteActive) Navigator.of(context).pop();
+                  print("SettingsPage: User is Unauthenticated. AuthGate will navigate.");
+                } else if (state is AuthFailure) {
+                  if (isModalRouteActive) Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('An error occurred: ${state.message}'), backgroundColor: Colors.redAccent),
+                  );
+                }
+              },
+            ),
+            BlocListener<DataErasureCubit, DataErasureState>(
+              listener: (context, state) {
+                final bool isModalRouteActive = ModalRoute.of(context)?.isCurrent == false;
+                if (state is DataErasureInProgress) {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext dialogContext) {
+                      return AlertDialog(
+                        content: Row(
+                          children: [
+                            const CircularProgressIndicator(),
+                            const SizedBox(width: 20),
+                            Text("Erasing ${state.actionType.replaceAll('_', ' ')}..."),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                } else if (state is DataErasureSuccess) {
+                  if (isModalRouteActive) Navigator.of(context).pop(); // Dismiss progress dialog
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(state.message), backgroundColor: Colors.green),
+                  );
+                } else if (state is DataErasureFailure) {
+                  if (isModalRouteActive) Navigator.of(context).pop(); // Dismiss progress dialog
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(state.message), backgroundColor: Colors.redAccent),
+                  );
+                }
+              },
+            ),
+          ],
+          child: BlocProvider<DataErasureCubit>(
+            create: (context) => DataErasureCubit(
+              authCubit: context.read<AuthCubit>(),
+              authApiService: context.read<AuthApiService>(),
+            ),
+            child: _buildSettingsList(context),
           ),
-          BlocListener<DataErasureCubit, DataErasureState>(
-            listener: (context, state) {
-              final bool isModalRouteActive = ModalRoute.of(context)?.isCurrent == false;
-              if (state is DataErasureInProgress) {
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (BuildContext dialogContext) {
-                    return AlertDialog(
-                      content: Row(
-                        children: [
-                          const CircularProgressIndicator(),
-                          const SizedBox(width: 20),
-                          Text("Erasing ${state.actionType.replaceAll('_', ' ')}..."),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              } else if (state is DataErasureSuccess) {
-                if (isModalRouteActive) Navigator.of(context).pop(); // Dismiss progress dialog
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.message), backgroundColor: Colors.green),
-                );
-              } else if (state is DataErasureFailure) {
-                if (isModalRouteActive) Navigator.of(context).pop(); // Dismiss progress dialog
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.message), backgroundColor: Colors.redAccent),
-                );
-              }
-            },
-          ),
-        ],
-        child: _buildSettingsList(context),
+        ),
       ),
     );
   }
@@ -196,6 +206,19 @@ class SettingsPage extends StatelessWidget {
         const Divider(),
         _buildSectionHeader(context, "Account Actions"),
         ListTile(
+          leading: Icon(Icons.bug_report, color: Theme.of(context).colorScheme.secondary),
+          title: Text(
+            'Clear Auth Data (Debug)',
+            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+          ),
+          onTap: () {
+            context.read<AuthCubit>().clearAllAuthDataForDebug();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Authentication data cleared.')),
+            );
+          },
+        ),
+        ListTile(
           leading: Icon(Icons.delete_forever, color: Theme.of(context).colorScheme.error),
           title: Text(
             'Delete Account',
@@ -242,64 +265,17 @@ class SettingsPage extends StatelessWidget {
     required VoidCallback onConfirm,
     String? requireConfirmationText,
   }) {
-    final TextEditingController? confirmationController = requireConfirmationText != null ? TextEditingController() : null;
-    final formKey = GlobalKey<FormState>();
-
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) {
-        return AlertDialog(
-          title: Text(dialogTitle),
-          content: SingleChildScrollView(
-            child: Form(
-              key: formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(dialogContent),
-                  if (requireConfirmationText != null && confirmationController != null) ...[
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: confirmationController,
-                      decoration: InputDecoration(labelText: 'Type "$requireConfirmationText" to confirm'),
-                      validator: (value) {
-                        if (value != requireConfirmationText) {
-                          return 'Confirmation text does not match.';
-                        }
-                        return null;
-                      },
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                if (requireConfirmationText != null) {
-                  if (formKey.currentState!.validate()) {
-                    Navigator.of(dialogContext).pop();
-                    onConfirm();
-                  }
-                } else {
-                  Navigator.of(dialogContext).pop();
-                  onConfirm();
-                }
-              },
-              child: Text('Confirm', style: TextStyle(color: Theme.of(context).colorScheme.error)),
-            ),
-          ],
+        return _ErasureConfirmationDialogContent(
+          dialogTitle: dialogTitle,
+          dialogContent: dialogContent,
+          onConfirm: onConfirm,
+          requireConfirmationText: requireConfirmationText,
         );
       },
-    ).then((_) {
-      confirmationController?.dispose();
-    });
+    );
   }
 
   void _showDeleteAccountConfirmationDialog(BuildContext context) {
@@ -324,6 +300,96 @@ class SettingsPage extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+class _ErasureConfirmationDialogContent extends StatefulWidget {
+  final String dialogTitle;
+  final String dialogContent;
+  final VoidCallback onConfirm;
+  final String? requireConfirmationText;
+
+  const _ErasureConfirmationDialogContent({
+    required this.dialogTitle,
+    required this.dialogContent,
+    required this.onConfirm,
+    this.requireConfirmationText,
+  });
+
+  @override
+  State<_ErasureConfirmationDialogContent> createState() => _ErasureConfirmationDialogContentState();
+}
+
+class _ErasureConfirmationDialogContentState extends State<_ErasureConfirmationDialogContent> {
+  late final TextEditingController? _confirmationController;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.requireConfirmationText != null) {
+      _confirmationController = TextEditingController();
+    } else {
+      _confirmationController = null;
+    }
+  }
+
+  @override
+  void dispose() {
+    _confirmationController?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(widget.dialogTitle),
+      content: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(widget.dialogContent),
+              if (widget.requireConfirmationText != null && _confirmationController != null) ...[
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _confirmationController,
+                  decoration: InputDecoration(labelText: 'Type "${widget.requireConfirmationText}" to confirm'),
+                  validator: (value) {
+                    if (value != widget.requireConfirmationText) {
+                      return 'Confirmation text does not match.';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () {
+            if (widget.requireConfirmationText != null) {
+              if (_formKey.currentState!.validate()) {
+                Navigator.of(context).pop();
+                widget.onConfirm();
+              }
+            } else {
+              Navigator.of(context).pop();
+              widget.onConfirm();
+            }
+          },
+          child: Text('Confirm', style: TextStyle(color: Theme.of(context).colorScheme.error)),
+        ),
+      ],
     );
   }
 }

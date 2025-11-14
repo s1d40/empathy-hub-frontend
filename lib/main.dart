@@ -1,124 +1,135 @@
-import 'package:empathy_hub_app/features/auth/presentation/auth_cubit.dart';
-import 'package:empathy_hub_app/features/auth/presentation/widgets/auth_gate.dart'; // Import the separated AuthGate
-import 'package:empathy_hub_app/core/services/auth_api_service.dart';
-import 'package:empathy_hub_app/core/services/post_api_service.dart';
-import 'package:empathy_hub_app/core/services/user_api_service.dart';
-import 'package:empathy_hub_app/core/services/comment_api_service.dart';
-import 'package:empathy_hub_app/features/settings/presentation/cubit/data_erasure_cubit.dart';
-import 'package:empathy_hub_app/core/services/chat_api_service.dart'; // Import ChatApiService
-import 'package:empathy_hub_app/core/services/report_api_service.dart'; // Import ReportApiService
-import 'package:empathy_hub_app/core/services/general_api_service.dart';
+import 'package:anonymous_hubs/features/auth/presentation/auth_cubit.dart';
+import 'package:anonymous_hubs/core/services/auth_api_service.dart';
+import 'package:anonymous_hubs/core/services/notification_api_service.dart';
+import 'package:anonymous_hubs/core/services/chat_api_service.dart';
+import 'package:anonymous_hubs/core/services/post_api_service.dart';
+import 'package:anonymous_hubs/core/services/comment_api_service.dart'; // Import CommentApiService
+import 'package:anonymous_hubs/core/services/user_api_service.dart';
+import 'package:anonymous_hubs/core/services/report_api_service.dart'; // Import ReportApiService
+import 'package:anonymous_hubs/features/notification/presentation/cubit/notification_cubit/notification_cubit.dart';
+import 'package:anonymous_hubs/features/chat/presentation/cubit/chat_list_cubit/chat_list_cubit.dart';
+import 'package:anonymous_hubs/features/feed/presentation/cubit/feed_cubit.dart';
+import 'package:anonymous_hubs/features/chat/presentation/cubit/chat_initiation_cubit/chat_initiation_cubit.dart';
+import 'package:anonymous_hubs/features/chat/presentation/cubit/chat_request_cubit/chat_request_cubit.dart';
+import 'package:anonymous_hubs/features/settings/presentation/cubit/data_erasure_cubit.dart';
+import 'package:anonymous_hubs/features/user_profile/presentation/cubit/user_interaction_lists_cubit.dart';
+import 'package:anonymous_hubs/features/user_profile/presentation/cubit/user_interaction_cubit.dart';
+import 'package:anonymous_hubs/features/report/presentation/cubit/report_cubit.dart'; // Import ReportCubit
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart' as http; // Import http package
-import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
-import 'package:empathy_hub_app/features/feed/presentation/cubit/feed_cubit.dart';
-import 'package:empathy_hub_app/features/chat/presentation/cubit/chat_room_cubit/chat_room_cubit.dart';
-import 'package:empathy_hub_app/features/chat/presentation/cubit/chat_initiation_cubit/chat_initiation_cubit.dart'; // Import ChatInitiationCubit
-import 'package:empathy_hub_app/features/user_profile/presentation/cubit/user_interaction_lists_cubit.dart'; // Import UserInteractionListsCubit
-import 'package:empathy_hub_app/features/user_profile/presentation/cubit/user_interaction_cubit.dart'; // Import UserInteractionCubit
-import 'package:empathy_hub_app/features/report/presentation/cubit/report_cubit.dart'; // Import ReportCubit
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
+import 'app.dart';
 
-Future<void> main() async { // Make main async
-  // Ensure Flutter bindings are initialized, especially if you do async work before runApp.
-  WidgetsFlutterBinding.ensureInitialized();
-
-  // --- DEVELOPMENT ONLY: Clear SharedPreferences on app start ---
-  // TODO: Remove this or make it conditional for release builds!
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.clear();
-  print("DEV_MODE: SharedPreferences cleared for fresh start.");
-  // --- END DEVELOPMENT ONLY ---
-
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    // Create instances of your API services
-    // It's good practice to share a single http.Client instance if possible
-    final httpClient = http.Client(); 
-    final authApiService = AuthApiService(client: httpClient);
-    final postApiService = PostApiService(client: httpClient);
-    final userApiService = UserApiService(client: httpClient);
-    final commentApiService = CommentApiService(client: httpClient);
-    final generalApiService = GeneralApiService(client: httpClient);
-    final chatApiService = ChatApiService(client: httpClient); // Create ChatApiService instance
-    final reportApiService = ReportApiService(client: httpClient); // Create ReportApiService instance
-
-    return MultiRepositoryProvider(
+void main() {
+  runApp(
+    MultiRepositoryProvider(
       providers: [
-        RepositoryProvider<AuthApiService>.value(value: authApiService),
-        RepositoryProvider<PostApiService>.value(value: postApiService),
-        RepositoryProvider<UserApiService>.value(value: userApiService),
-        RepositoryProvider<CommentApiService>.value(value: commentApiService),
-        RepositoryProvider<GeneralApiService>.value(value: generalApiService),
-        RepositoryProvider<ChatApiService>.value(value: chatApiService), // Provide ChatApiService
-        RepositoryProvider<ReportApiService>.value(value: reportApiService), // Provide ReportApiService
-        // If you want to dispose the client when the app closes, you might handle it differently
-        // or provide it as a value and manage its lifecycle if necessary.
-        // For simplicity here, we're just creating it.
+        RepositoryProvider<AuthApiService>(
+          create: (context) => AuthApiService(
+            client: http.Client(),
+          ),
+        ),
+        RepositoryProvider<NotificationApiService>(
+          create: (context) => NotificationApiService(
+            client: http.Client(),
+          ),
+        ),
+        RepositoryProvider<ChatApiService>(
+          create: (context) => ChatApiService(
+            client: http.Client(),
+          ),
+        ),
+        RepositoryProvider<PostApiService>(
+          create: (context) => PostApiService(
+            client: http.Client(),
+          ),
+        ),
+        RepositoryProvider<CommentApiService>( // Provide CommentApiService
+          create: (context) => CommentApiService(
+            client: http.Client(),
+          ),
+        ),
+        RepositoryProvider<UserApiService>(
+          create: (context) => UserApiService(
+            client: http.Client(),
+          ),
+        ),
+        RepositoryProvider<ReportApiService>( // Provide ReportApiService
+          create: (context) => ReportApiService(
+            client: http.Client(),
+          ),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider<AuthCubit>(
             create: (context) => AuthCubit(
-              context.read<AuthApiService>(), // Read the service provided above
+              context.read<AuthApiService>(),
+            ),
+          ),
+          BlocProvider<NotificationCubit>(
+            create: (context) => NotificationCubit(
+              notificationApiService: context.read<NotificationApiService>(),
+              authCubit: context.read<AuthCubit>(),
+            ),
+          ),
+          BlocProvider<ChatListCubit>(
+            create: (context) => ChatListCubit(
+              chatApiService: context.read<ChatApiService>(),
+              authCubit: context.read<AuthCubit>(),
             ),
           ),
           BlocProvider<FeedCubit>(
             create: (context) => FeedCubit(
+              authCubit: context.read<AuthCubit>(),
               postApiService: context.read<PostApiService>(),
-              authCubit: context.read<AuthCubit>(), // FeedCubit needs AuthCubit
             ),
           ),
-          BlocProvider<ReportCubit>( // Add ReportCubit here
-            create: (context) => ReportCubit(
-              reportApiService: context.read<ReportApiService>(),
-              authCubit: context.read<AuthCubit>(),
-            ),
-          ),
-          BlocProvider<DataErasureCubit>( // Add DataErasureCubit here
-            create: (context) => DataErasureCubit(
-              authApiService: context.read<AuthApiService>(),
-              authCubit: context.read<AuthCubit>(),
-            ),
-          ),
-          BlocProvider<ChatInitiationCubit>( // Use ChatInitiationCubit
+          BlocProvider<ChatInitiationCubit>(
             create: (context) => ChatInitiationCubit(
               chatApiService: context.read<ChatApiService>(),
               authCubit: context.read<AuthCubit>(),
             ),
           ),
-          BlocProvider<UserInteractionCubit>( // Add UserInteractionCubit here
-            create: (context) => UserInteractionCubit(
-              userApiService: context.read<UserApiService>(),
+          BlocProvider<ChatRequestCubit>(
+            create: (context) => ChatRequestCubit(
+              chatApiService: context.read<ChatApiService>(),
+              authCubit: context.read<AuthCubit>(),
+              notificationCubit: context.read<NotificationCubit>(),
+            ),
+          ),
+          BlocProvider<DataErasureCubit>(
+            create: (context) => DataErasureCubit(
               authApiService: context.read<AuthApiService>(),
               authCubit: context.read<AuthCubit>(),
             ),
           ),
-          BlocProvider<UserInteractionListsCubit>( // Add UserInteractionListsCubit here
+          BlocProvider<UserInteractionListsCubit>(
             create: (context) => UserInteractionListsCubit(
               authApiService: context.read<AuthApiService>(),
               userApiService: context.read<UserApiService>(),
               authCubit: context.read<AuthCubit>(),
             ),
           ),
-        ],
-        child: MaterialApp(
-          title: 'Empathy Hub',
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true,
-            visualDensity: VisualDensity.adaptivePlatformDensity,
+          BlocProvider<UserInteractionCubit>(
+            create: (context) => UserInteractionCubit(
+              userApiService: context.read<UserApiService>(),
+              authApiService: context.read<AuthApiService>(),
+              authCubit: context.read<AuthCubit>(),
+            ),
           ),
-          debugShowCheckedModeBanner: false,
-          home: const AuthGate(),
-        ),
-    ));
-  }
+          BlocProvider<ReportCubit>(
+            create: (context) => ReportCubit(
+              reportApiService: context.read<ReportApiService>(),
+              authCubit: context.read<AuthCubit>(),
+            ),
+          ),
+        ],
+        child: const AnonymousHubsApp(),
+      ),
+    ),
+  );
 }

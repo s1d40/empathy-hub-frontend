@@ -1,4 +1,4 @@
-import 'package:empathy_hub_app/core/config/api_config.dart';
+import 'package:anonymous_hubs/core/config/api_config.dart';
 import 'package:equatable/equatable.dart';
 
 class UserSimple extends Equatable {

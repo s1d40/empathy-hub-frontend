@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:empathy_hub_app/core/config/api_config.dart';
+import 'package:anonymous_hubs/core/config/api_config.dart';
 import 'package:equatable/equatable.dart';
 
 class Comment extends Equatable {

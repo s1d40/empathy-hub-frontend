@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:empathy_hub_app/core/config/api_config.dart';
-import 'package:empathy_hub_app/features/chat/data/models/models.dart'; // Our barrel file for chat models
+import 'package:anonymous_hubs/core/config/api_config.dart';
+import 'package:anonymous_hubs/features/chat/data/models/models.dart'; // Our barrel file for chat models
+import 'package:anonymous_hubs/core/services/api_exception.dart'; // Import the new ApiException
 
 class ChatApiService {
   final http.Client _client;
@@ -109,11 +110,11 @@ class ChatApiService {
         return ChatRoom.fromJson(responseData);
       } else {
         print('Failed to accept chat request $requestAnonymousId: ${response.statusCode} ${response.body}');
-        return null;
+        throw ApiException(response.statusCode, response.body);
       }
     } catch (e) {
       print('Error accepting chat request $requestAnonymousId: $e');
-      return null;
+      rethrow; // Rethrow to be caught by the Cubit
     }
   }
 
@@ -148,10 +149,10 @@ class ChatApiService {
 
   /// Initiates a direct chat or sends a chat request.
   ///
-  /// Returns either a [ChatRoom] if a room is created/found,
-  /// or a [ChatRequest] if a request is sent, or null on failure.
-  /// The calling code will need to check the type of the returned object.
-  Future<dynamic> initiateDirectChatOrRequest(
+  /// Returns a [ChatInitiationResponse] object indicating whether a [ChatRoom]
+  /// or [ChatRequest] was returned, and if the [ChatRequest] was an existing one.
+  /// Returns null on failure.
+  Future<ChatInitiationResponse?> initiateDirectChatOrRequest(
     String token,
     ChatInitiate chatInitiateData,
   ) async {
@@ -170,21 +171,24 @@ class ChatApiService {
 
       if (response.statusCode == 201) {
         final Map<String, dynamic> responseData = json.decode(response.body);
-        // Determine the type of response based on key presence.
-        // ChatRoomRead has 'anonymous_room_id', ChatRequestRead has 'anonymous_request_id'.
+        
         if (responseData.containsKey('anonymous_room_id')) {
-          return ChatRoom.fromJson(responseData);
+          return ChatInitiationResponse(
+            chatRoom: ChatRoom.fromJson(responseData),
+            isExisting: true, // ChatRoom is always considered existing if returned
+          );
         } else if (responseData.containsKey('anonymous_request_id')) {
-          return ChatRequest.fromJson(responseData);
+          final bool isNewRequest = responseData['is_new_request'] ?? false; // Default to false if not present
+          return ChatInitiationResponse(
+            chatRequest: ChatRequest.fromJson(responseData),
+            isExisting: !isNewRequest, // If it's NOT a new request, it's an existing one
+          );
         } else {
-          // Should not happen if API conforms to docs
           print('Unknown response type from initiate-direct: $responseData');
           return null;
         }
       } else {
         print('Failed to initiate chat/request: ${response.statusCode} ${response.body}');
-        // You could parse the error body here if it's structured
-        // e.g., return response.body as String to show the error message.
         return null; 
       }
     } catch (e) {
@@ -227,6 +231,35 @@ class ChatApiService {
       }
     } catch (e) {
       print('Error fetching messages for room $roomAnonymousId: $e');
+      return null;
+    }
+  }
+
+  Future<ChatRoom?> markChatRoomAsRead(
+    String token,
+    String roomAnonymousId,
+  ) async {
+    final Uri url = Uri.parse(
+        '${ApiConfig.baseUrl}/api/v1/chat/$roomAnonymousId/mark-read');
+
+    try {
+      final response = await _client.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        return ChatRoom.fromJson(responseData);
+      } else {
+        print('Failed to mark chat room $roomAnonymousId as read: ${response.statusCode} ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Error marking chat room $roomAnonymousId as read: $e');
       return null;
     }
   }

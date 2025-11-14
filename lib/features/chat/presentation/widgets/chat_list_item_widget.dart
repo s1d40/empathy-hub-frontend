@@ -1,8 +1,9 @@
-import 'package:empathy_hub_app/features/auth/presentation/auth_cubit.dart';
-import 'package:empathy_hub_app/features/chat/data/models/models.dart';
+import 'package:anonymous_hubs/features/auth/presentation/auth_cubit.dart';
+import 'package:anonymous_hubs/features/chat/data/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart'; // For date formatting
+import 'package:anonymous_hubs/features/chat/data/models/chat_participant_status_model.dart'; // New import
 
 class ChatListItemWidget extends StatelessWidget {
   final ChatRoom chatRoom;
@@ -17,7 +18,7 @@ class ChatListItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Determine the other participant for 1-on-1 chats
-    UserSimple? otherParticipant;
+    ChatParticipantStatus? otherParticipant; // Changed type
     final currentUserState = context.read<AuthCubit>().state;
     String currentUserId = '';
 
@@ -28,7 +29,7 @@ class ChatListItemWidget extends StatelessWidget {
     if (!chatRoom.isGroup && chatRoom.participants.isNotEmpty) {
       otherParticipant = chatRoom.participants.firstWhere(
         (p) => p.anonymousId != currentUserId,
-        orElse: () => chatRoom.participants.first, // Fallback, though should find other
+        orElse: () => ChatParticipantStatus(anonymousId: '', username: 'Unknown'), // Changed fallback
       );
     }
 
@@ -36,9 +37,10 @@ class ChatListItemWidget extends StatelessWidget {
         ? chatRoom.name ?? 'Group Chat'
         : otherParticipant?.username ?? 'Unknown User';
 
-    final String? avatarUrl = chatRoom.isGroup
-        ? null // Placeholder for group avatar
-        : otherParticipant?.avatarUrl;
+    // Note: ChatParticipantStatus does not currently have avatar_url.
+    // If avatars are needed for participants, UserSimple might still be needed
+    // or ChatParticipantStatus needs to be extended. For now, it will be null.
+    final String? avatarUrl = null; // otherParticipant?.avatarUrl; // Removed as ChatParticipantStatus doesn't have it
 
     String lastMessagePreview = chatRoom.lastMessage?.content ?? 'No messages yet';
     if (lastMessagePreview.length > 35) {

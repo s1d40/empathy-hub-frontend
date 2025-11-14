@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.empathyhub" "\0"
-            VALUE "FileDescription", "empathy_hub_app" "\0"
+            VALUE "CompanyName", "com.anonymoushubs" "\0"
+            VALUE "FileDescription", "anonymous_hubs" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "empathy_hub_app" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2025 com.empathyhub. All rights reserved." "\0"
-            VALUE "OriginalFilename", "empathy_hub_app.exe" "\0"
-            VALUE "ProductName", "empathy_hub_app" "\0"
+            VALUE "InternalName", "anonymous_hubs" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2025 com.anonymoushubs. All rights reserved." "\0"
+            VALUE "OriginalFilename", "anonymous_hubs.exe" "\0"
+            VALUE "ProductName", "anonymous_hubs" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

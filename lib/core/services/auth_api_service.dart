@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:empathy_hub_app/core/config/api_config.dart';
-import 'package:empathy_hub_app/features/user/data/models/user_models.dart'; // For UserSimple
+import 'package:anonymous_hubs/core/config/api_config.dart';
+import 'package:anonymous_hubs/features/user/data/models/user_models.dart'; // For UserSimple
 
 class AuthApiService {
   final http.Client _client;
@@ -212,12 +212,12 @@ class AuthApiService {
     int skip = 0,
     int limit = 20,
   }) async {
-    // Path from OpenAPI: GET /api/v1/users/me/muted
+    // Path from OpenAPI: GET /api/v1/user-actions/me/muted
     final Map<String, String> queryParameters = {
       'skip': skip.toString(),
       'limit': limit.toString(),
     };
-    final Uri url = Uri.parse('${ApiConfig.baseUrl}/api/v1/users/me/muted')
+    final Uri url = Uri.parse('${ApiConfig.baseUrl}/api/v1/user-actions/me/muted')
         .replace(queryParameters: queryParameters);
 
     try {
@@ -254,12 +254,12 @@ class AuthApiService {
     int skip = 0,
     int limit = 20,
   }) async {
-    // Path from OpenAPI: GET /api/v1/users/me/blocked
+    // Path from OpenAPI: GET /api/v1/user-actions/me/blocked
     final Map<String, String> queryParameters = {
       'skip': skip.toString(),
       'limit': limit.toString(),
     };
-    final Uri url = Uri.parse('${ApiConfig.baseUrl}/api/v1/users/me/blocked')
+    final Uri url = Uri.parse('${ApiConfig.baseUrl}/api/v1/user-actions/me/blocked')
         .replace(queryParameters: queryParameters);
 
     try {
@@ -298,7 +298,7 @@ class AuthApiService {
         url,
         headers: {'Authorization': 'Bearer $token'},
       );
-      if (response.statusCode == 204) {
+      if (response.statusCode == 204 || response.statusCode == 200) {
         return true;
       } else {
         print('Failed to erase all posts: ${response.statusCode} ${response.body}');
@@ -322,7 +322,7 @@ class AuthApiService {
         url,
         headers: {'Authorization': 'Bearer $token'},
       );
-      if (response.statusCode == 204) {
+      if (response.statusCode == 204 || response.statusCode == 200) {
         return true;
       } else {
         print('Failed to erase all comments: ${response.statusCode} ${response.body}');
@@ -346,7 +346,7 @@ class AuthApiService {
         url,
         headers: {'Authorization': 'Bearer $token'},
       );
-      if (response.statusCode == 204) {
+      if (response.statusCode == 204 || response.statusCode == 200) {
         return true;
       } else {
         print('Failed to erase all chat messages: ${response.statusCode} ${response.body}');
@@ -370,7 +370,7 @@ class AuthApiService {
         url,
         headers: {'Authorization': 'Bearer $token'},
       );
-      if (response.statusCode == 204) {
+      if (response.statusCode == 204 || response.statusCode == 200) {
         return true;
       } else {
         print('Failed to erase all account info: ${response.statusCode} ${response.body}');

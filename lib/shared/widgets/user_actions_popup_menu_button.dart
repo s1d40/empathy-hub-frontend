@@ -1,13 +1,14 @@
-import 'package:empathy_hub_app/core/enums/app_enums.dart';
-import 'package:empathy_hub_app/features/auth/presentation/auth_cubit.dart'; // Needed to check if it's own profile
-import 'package:empathy_hub_app/features/chat/data/models/chat_initiate_model.dart'; // Assuming this model exists for chat initiation
-import 'package:empathy_hub_app/features/chat/presentation/cubit/chat_initiation_cubit/chat_initiation_cubit.dart'; // Use ChatInitiationCubit
-import 'package:empathy_hub_app/features/report/presentation/cubit/report_cubit.dart';
-import 'package:empathy_hub_app/features/report/presentation/widgets/report_dialog_widget.dart';
-import 'package:empathy_hub_app/features/chat/presentation/widgets/chat_request_message_dialog_widget.dart'; // Import the new dialog
-import 'package:empathy_hub_app/features/user_profile/presentation/cubit/user_interaction_cubit.dart'; // Needed for mute/block actions
-import 'package:empathy_hub_app/features/chat/presentation/pages/chat_room_page.dart'; // For navigation
-import 'package:empathy_hub_app/features/user_profile/presentation/pages/user_profile_page.dart'; // Needed for navigation
+import 'package:anonymous_hubs/core/enums/app_enums.dart';
+import 'package:anonymous_hubs/features/auth/presentation/auth_cubit.dart'; // Needed to check if it's own profile
+import 'package:anonymous_hubs/features/chat/data/models/chat_initiate_model.dart'; // Assuming this model exists for chat initiation
+import 'package:anonymous_hubs/features/chat/presentation/cubit/chat_initiation_cubit/chat_initiation_cubit.dart'; // Use ChatInitiationCubit
+import 'package:anonymous_hubs/features/report/presentation/cubit/report_cubit.dart';
+import 'package:anonymous_hubs/features/report/presentation/widgets/report_dialog_widget.dart';
+import 'package:anonymous_hubs/features/chat/presentation/widgets/chat_request_message_dialog_widget.dart'; // Import the new dialog
+import 'package:anonymous_hubs/features/user_profile/presentation/cubit/user_interaction_cubit.dart'; // Needed for mute/block actions
+import 'package:anonymous_hubs/features/chat/presentation/pages/chat_room_page.dart'; // For navigation
+import 'package:anonymous_hubs/features/user_profile/presentation/pages/user_profile_page.dart'; // Needed for navigation
+import 'package:anonymous_hubs/features/user_profile/presentation/pages/user_profile_page.dart'; // Import createUserProfilePageWithCubit
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -48,23 +49,13 @@ class UserActionsPopupMenuButton extends StatelessWidget {
         );
         break;
       case UserActionMenuItem.startChat:
-        if (targetUserChatAvailability == 'request_only') {
-          showDialog(
-            context: context,
-            // Provide ChatInitiationCubit to the dialog
-            builder: (dialogContext) => BlocProvider.value(
-              value: chatInitiationCubit,
-              child: ChatRequestMessageDialogWidget(
-                targetUserAnonymousId: targetUserAnonymousId,
-                targetUsername: targetUsername,
-              ),
-            ),
-          );
-        } else if (targetUserChatAvailability == 'do_not_disturb') {
+        if (targetUserChatAvailability == 'do_not_disturb') {
            ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('$targetUsername is not accepting messages now.')),
           );
-        } else { // Defaults to open_to_chat or if availability is unknown
+        } else {
+          // Always initiate chat first, regardless of chatAvailability,
+          // to let the cubit determine if a room or request exists.
           chatInitiationCubit.initiateChat(ChatInitiate(targetUserAnonymousId: targetUserAnonymousId));
           // Feedback is handled by the BlocListener below
           ScaffoldMessenger.of(context).showSnackBar(
@@ -122,9 +113,26 @@ class UserActionsPopupMenuButton extends StatelessWidget {
           );
         } else if (state is ChatInitiationSuccessRequest && state.targetUserAnonymousId == targetUserAnonymousId) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Chat request sent to $targetUsername.')),
-          );
+          if (state.isExistingRequest) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Chat request already sent to $targetUsername.')),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Chat request sent to $targetUsername.')),
+            );
+            // Only show the dialog for newly created requests
+            showDialog(
+              context: context,
+              builder: (dialogContext) => BlocProvider.value(
+                value: context.read<ChatInitiationCubit>(), // Correctly access cubit from context
+                child: ChatRequestMessageDialogWidget(
+                  targetUserAnonymousId: targetUserAnonymousId,
+                  targetUsername: targetUsername,
+                ),
+              ),
+            );
+          }
         } else if (state is ChatInitiationFailure && state.targetUserAnonymousId == targetUserAnonymousId) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(

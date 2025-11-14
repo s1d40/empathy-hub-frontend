@@ -1,5 +1,5 @@
-import 'package:empathy_hub_app/features/chat/data/models/chat_enums.dart';
-import 'package:empathy_hub_app/features/chat/data/models/user_simple_model.dart';
+import 'package:anonymous_hubs/features/chat/data/models/chat_enums.dart';
+import 'package:anonymous_hubs/features/chat/data/models/user_simple_model.dart';
 import 'package:equatable/equatable.dart';
 
 class ChatRequest extends Equatable {

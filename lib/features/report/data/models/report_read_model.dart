@@ -1,5 +1,5 @@
-import 'package:empathy_hub_app/core/enums/app_enums.dart';
-import 'package:empathy_hub_app/features/user/data/models/user_models.dart'; // For AuthorRead
+import 'package:anonymous_hubs/core/enums/app_enums.dart';
+import 'package:anonymous_hubs/features/user/data/models/user_models.dart'; // For AuthorRead
 import 'package:equatable/equatable.dart';
 
 class ReportRead extends Equatable {

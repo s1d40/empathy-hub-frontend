@@ -1,10 +1,10 @@
-import 'package:empathy_hub_app/core/services/comment_api_service.dart';
-import 'package:empathy_hub_app/features/auth/presentation/auth_cubit.dart';
-import 'package:empathy_hub_app/features/feed/presentation/models/comment_model.dart';
-import 'package:empathy_hub_app/features/feed/presentation/widgets/comment_item_widget.dart';
+import 'package:anonymous_hubs/core/services/comment_api_service.dart';
+import 'package:anonymous_hubs/features/auth/presentation/auth_cubit.dart';
+import 'package:anonymous_hubs/features/feed/presentation/models/comment_model.dart';
+import 'package:anonymous_hubs/features/feed/presentation/widgets/comment_item_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:empathy_hub_app/features/feed/presentation/cubit/comments_cubit/comments_cubit.dart';
+import 'package:anonymous_hubs/features/feed/presentation/cubit/comments_cubit/comments_cubit.dart';
 
 class UserProfileCommentsListWidget extends StatelessWidget {
   final List<Comment> comments;

@@ -1,26 +1,66 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
-import 'package:empathy_hub_app/core/services/chat_api_service.dart';
-import 'package:empathy_hub_app/features/auth/presentation/auth_cubit.dart';
-import 'package:empathy_hub_app/features/chat/data/models/models.dart';
 import 'package:equatable/equatable.dart';
+import 'package:anonymous_hubs/features/auth/presentation/auth_cubit.dart';
+import 'package:anonymous_hubs/core/services/chat_api_service.dart';
+import 'package:anonymous_hubs/features/chat/data/models/chat_request_model.dart';
+import 'package:anonymous_hubs/features/chat/data/models/chat_room_model.dart'; // New: Import ChatRoom
+import 'package:anonymous_hubs/features/notification/presentation/cubit/notification_cubit/notification_cubit.dart';
+import 'package:anonymous_hubs/core/enums/notification_enums.dart' as NotifEnums; // Alias NotificationEnums
+import 'package:anonymous_hubs/core/services/api_exception.dart'; // Import ApiException
 
 part 'chat_request_state.dart';
 
 class ChatRequestCubit extends Cubit<ChatRequestState> {
   final ChatApiService _chatApiService;
   final AuthCubit _authCubit;
-
-  // Could add pagination limit if API supports it and it's needed
-  // static const int _requestsLimit = 20;
+  final NotificationCubit _notificationCubit;
+  late StreamSubscription _authSubscription;
+  StreamSubscription? _notificationSubscription;
 
   ChatRequestCubit({
     required ChatApiService chatApiService,
     required AuthCubit authCubit,
+    required NotificationCubit notificationCubit,
   })  : _chatApiService = chatApiService,
         _authCubit = authCubit,
-        super(ChatRequestInitial());
+        _notificationCubit = notificationCubit,
+        super(ChatRequestInitial()) {
+    _authSubscription = _authCubit.stream.listen((state) {
+      if (state is Authenticated) {
+        fetchPendingChatRequests();
+        _listenToNotifications();
+      } else if (state is Unauthenticated) {
+        _notificationSubscription?.cancel();
+        emit(ChatRequestInitial());
+      }
+    });
 
-  Future<void> fetchPendingRequests() async {
+    if (_authCubit.state is Authenticated) {
+      fetchPendingChatRequests();
+      _listenToNotifications();
+    }
+  }
+
+  void _listenToNotifications() {
+    _notificationSubscription?.cancel(); // Cancel previous subscription if any
+    _notificationSubscription = _notificationCubit.stream.listen((notificationState) {
+      if (notificationState is NotificationLoaded) {
+        // Check for new chat request notifications
+        final newChatRequests = notificationState.notifications.where(
+          (n) => n.notificationType == NotifEnums.NotificationType.chatRequestReceived && n.status == NotifEnums.NotificationStatus.unread,
+        ).toList();
+
+        if (newChatRequests.isNotEmpty) {
+          // A new chat request notification arrived, so refetch pending requests
+          fetchPendingChatRequests();
+        }
+      }
+    });
+  }
+
+  Future<void> fetchPendingChatRequests() async {
     if (_authCubit.state is! Authenticated) {
       emit(const ChatRequestError("User not authenticated."));
       return;
@@ -29,82 +69,78 @@ class ChatRequestCubit extends Cubit<ChatRequestState> {
 
     emit(ChatRequestLoading());
     try {
-      // Assuming getPendingChatRequests handles pagination if implemented
       final requests = await _chatApiService.getPendingChatRequests(token);
-
       if (requests != null) {
-        emit(ChatRequestLoaded(requests));
+        emit(ChatRequestLoaded(
+          pendingRequests: requests,
+          pendingRequestCount: requests.length,
+        ));
       } else {
-        emit(const ChatRequestError("Failed to load pending chat requests."));
+        emit(const ChatRequestError("Failed to load chat requests."));
       }
     } catch (e) {
-      // Log the full technical error for developers
-      print("ChatRequestCubit: Error fetching pending requests: ${e.toString()}");
-
-      String userFriendlyMessage;
-      if (e.toString().contains("404")) {
-        userFriendlyMessage = "Could not retrieve chat requests at this time. This feature might be temporarily unavailable.";
-      } else if (e.toString().toLowerCase().contains("network") || e.toString().toLowerCase().contains("socketexception")) {
-        userFriendlyMessage = "A network error occurred. Please check your connection and try again.";
-      } else {
-        userFriendlyMessage = "An error occurred while fetching requests. Please try again later.";
-      }
-      emit(ChatRequestError(userFriendlyMessage));
+      emit(ChatRequestError("An error occurred: ${e.toString()}"));
     }
   }
 
-  Future<void> acceptRequest(String requestAnonymousId) async {
+  Future<void> acceptChatRequest(String requestId) async {
     if (_authCubit.state is! Authenticated) {
-      emit(ChatRequestActionFailure("User not authenticated.", requestAnonymousId));
+      emit(const ChatRequestError("User not authenticated."));
       return;
     }
     final token = (_authCubit.state as Authenticated).token;
 
-    emit(ChatRequestActionInProgress(requestAnonymousId));
+    emit(ChatRequestActionInProgress(requestId));
     try {
-      final newChatRoom = await _chatApiService.acceptChatRequest(token, requestAnonymousId);
-
+      final newChatRoom = await _chatApiService.acceptChatRequest(token, requestId);
       if (newChatRoom != null) {
-        emit(ChatRequestAcceptSuccess(newChatRoom, requestAnonymousId));
-        // After success, refresh the list of pending requests
-        // or manually remove the accepted request from the current list if ChatRequestLoaded
-        if (state is ChatRequestLoaded || state is ChatRequestAcceptSuccess || state is ChatRequestDeclineSuccess) {
-          // To ensure the list is up-to-date, re-fetch.
-          // A more optimized way would be to remove it from the current list in ChatRequestLoaded.
-          fetchPendingRequests();
+        emit(ChatRequestAcceptSuccess(newChatRoom));
+        fetchPendingChatRequests(); // Refresh the list
+      }
+    } on ApiException catch (e) {
+      if (e.statusCode == 404) {
+        // If the request is not found (e.g., sender deleted account)
+        if (state is ChatRequestLoaded) {
+          final currentRequests = (state as ChatRequestLoaded).pendingRequests;
+          final updatedRequests = currentRequests.where((req) => req.anonymousRequestId != requestId).toList();
+          emit(ChatRequestLoaded(
+            pendingRequests: updatedRequests,
+            pendingRequestCount: updatedRequests.length,
+          ));
         }
+        emit(const ChatRequestActionFailure("Chat request no longer exists or has been withdrawn."));
+        fetchPendingChatRequests(); // Re-sync with backend to be sure
       } else {
-        emit(ChatRequestActionFailure("Failed to accept chat request.", requestAnonymousId));
+        emit(ChatRequestActionFailure("Failed to accept chat request: ${e.message}"));
       }
     } catch (e) {
-      emit(ChatRequestActionFailure("Error accepting request: ${e.toString()}", requestAnonymousId));
+      emit(ChatRequestActionFailure("Failed to accept chat request: ${e.toString()}"));
     }
   }
 
-  Future<void> declineRequest(String requestAnonymousId) async {
+  Future<void> declineChatRequest(String requestId) async {
     if (_authCubit.state is! Authenticated) {
-      emit(ChatRequestActionFailure("User not authenticated.", requestAnonymousId));
+      emit(const ChatRequestError("User not authenticated."));
       return;
     }
     final token = (_authCubit.state as Authenticated).token;
 
-    emit(ChatRequestActionInProgress(requestAnonymousId));
+    emit(ChatRequestActionInProgress(requestId));
     try {
-      final declinedRequest = await _chatApiService.declineChatRequest(token, requestAnonymousId);
-
-      if (declinedRequest != null) {
-        emit(ChatRequestDeclineSuccess(declinedRequest));
-        // After success, refresh the list of pending requests
-        // or manually remove the declined request from the current list if ChatRequestLoaded
-         if (state is ChatRequestLoaded || state is ChatRequestAcceptSuccess || state is ChatRequestDeclineSuccess) {
-          // To ensure the list is up-to-date, re-fetch.
-          fetchPendingRequests();
-        }
-      } else {
-        emit(ChatRequestActionFailure("Failed to decline chat request.", requestAnonymousId));
+      final declinedChatRequest = await _chatApiService.declineChatRequest(token, requestId);
+      if (declinedChatRequest != null) {
+        emit(ChatRequestDeclineSuccess(declinedChatRequest));
+        fetchPendingChatRequests(); // Refresh the list
       }
     } catch (e) {
-      emit(ChatRequestActionFailure("Error declining request: ${e.toString()}", requestAnonymousId));
+      emit(ChatRequestActionFailure("Failed to decline chat request: ${e.toString()}"));
     }
+  }
+
+  @override
+  Future<void> close() {
+    _authSubscription.cancel();
+    _notificationSubscription?.cancel();
+    return super.close();
   }
 }

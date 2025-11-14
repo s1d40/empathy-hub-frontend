@@ -6,4 +6,5 @@ export 'chat_initiate_model.dart';
 export 'websocket_chat_message_model.dart';
 export 'websocket_message_model.dart';
 export 'chat_room_model.dart';
+export 'chat_initiation_response_model.dart'; // NEW: Export the new response model
 // Add any new chat-specific models here in the future

@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:empathy_hub_app/core/config/api_config.dart';
-import 'package:empathy_hub_app/features/user/data/models/user_models.dart'; // For UserRelationshipRead
+import 'package:anonymous_hubs/core/config/api_config.dart';
+import 'package:anonymous_hubs/features/user/data/models/user_models.dart'; // For UserRelationshipRead
 
 class UserApiService {
   final http.Client _client;

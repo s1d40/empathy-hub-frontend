@@ -1,12 +1,12 @@
-import 'package:empathy_hub_app/features/feed/presentation/models/post_model.dart'; // Changed import
-import 'package:empathy_hub_app/features/feed/presentation/pages/post_details_page.dart'; // Import the PostDetailsPage
-import 'package:empathy_hub_app/features/user_profile/presentation/pages/user_profile_page.dart'; // Import UserProfilePage
-import 'package:empathy_hub_app/features/feed/presentation/cubit/post_item_cubit/post_item_cubit.dart';
-import 'package:empathy_hub_app/core/enums/app_enums.dart'; // For VoteType
-import 'package:empathy_hub_app/features/report/presentation/cubit/report_cubit.dart'; // Import ReportCubit
-import 'package:empathy_hub_app/shared/widgets/user_actions_popup_menu_button.dart'; // Import the new widget
-import 'package:empathy_hub_app/features/report/presentation/widgets/report_dialog_widget.dart'; // Import ReportDialogWidget
-import 'package:empathy_hub_app/features/auth/presentation/auth_cubit.dart'; // Import AuthCubit
+import 'package:anonymous_hubs/features/feed/presentation/models/post_model.dart'; // Changed import
+import 'package:anonymous_hubs/features/feed/presentation/pages/post_details_page.dart'; // Import the PostDetailsPage
+import 'package:anonymous_hubs/features/user_profile/presentation/pages/user_profile_page.dart'; // Import UserProfilePage
+import 'package:anonymous_hubs/features/feed/presentation/cubit/post_item_cubit/post_item_cubit.dart';
+import 'package:anonymous_hubs/core/enums/app_enums.dart'; // For VoteType
+import 'package:anonymous_hubs/features/report/presentation/cubit/report_cubit.dart'; // Import ReportCubit
+import 'package:anonymous_hubs/shared/widgets/user_actions_popup_menu_button.dart'; // Import the new widget
+import 'package:anonymous_hubs/features/report/presentation/widgets/report_dialog_widget.dart'; // Import ReportDialogWidget
+import 'package:anonymous_hubs/features/auth/presentation/auth_cubit.dart'; // Import AuthCubit
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

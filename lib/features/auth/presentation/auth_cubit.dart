@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:empathy_hub_app/features/auth/presentation/models/user_model.dart'; // Import the User model
+import 'package:anonymous_hubs/features/auth/presentation/models/user_model.dart'; // Import the User model
 import 'package:flutter_secure_storage/flutter_secure_storage.dart'; // Import flutter_secure_storage
-import 'package:empathy_hub_app/core/services/auth_api_service.dart'; // Import ApiService
+import 'package:anonymous_hubs/core/services/auth_api_service.dart'; // Import ApiService
 
 part 'auth_state.dart'; // Links to the state file
 
@@ -171,6 +171,13 @@ class AuthCubit extends Cubit<AuthState> {
       } catch (_) {}
       emit(Unauthenticated());
     }
+  }
+
+  // Public method for debug purposes to clear all authentication data
+  Future<void> clearAllAuthDataForDebug() async {
+    final prefs = await SharedPreferences.getInstance();
+    await _clearAuthData(prefs);
+    emit(Unauthenticated()); // Transition to unauthenticated state after clearing
   }
 
   Future<void> _clearAuthData(SharedPreferences prefs) async {
